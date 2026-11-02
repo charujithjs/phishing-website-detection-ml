@@ -2,7 +2,9 @@ import mysql.connector
 from mysql.connector import Error
 from config import DB_CONFIG
 import logging
+import hmac
 from datetime import datetime
+from werkzeug.security import generate_password_hash, check_password_hash
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -103,6 +105,45 @@ def get_user_by_username(username):
             cursor.close()
             connection.close()
 
+_HASH_PREFIXES = ("pbkdf2:", "scrypt:")
+
+def _upgrade_password_hash(user_id, password):
+    """Replace a plain-text password with a hash"""
+    connection = get_connection()
+    if not connection:
+        return False
+    cursor = connection.cursor()
+    try:
+        cursor.execute(
+            "UPDATE users SET password = %s WHERE id = %s",
+            (generate_password_hash(password), user_id)
+        )
+        connection.commit()
+        return True
+    except Error as e:
+        logger.error(f"Error upgrading password hash: {e}")
+        return False
+    finally:
+        if connection.is_connected():
+            cursor.close()
+            connection.close()
+
+def verify_user_password(user, password):
+    """Check a typed password against the stored value.
+
+    New passwords are stored as hashes. Accounts created before hashing was
+    added still hold a plain-text password: it is accepted once and then
+    replaced with a hash automatically.
+    """
+    stored = (user.get("password") or "")
+    typed = (password or "")
+    if stored.startswith(_HASH_PREFIXES):
+        return check_password_hash(stored, typed)
+    if hmac.compare_digest(stored.encode("utf-8"), typed.encode("utf-8")):
+        _upgrade_password_hash(user["id"], typed)
+        return True
+    return False
+
 def create_user(username, password, email, is_admin=False):
     """Create a new user"""
     connection = get_connection()
@@ -128,7 +169,7 @@ def create_user(username, password, email, is_admin=False):
         # Insert new user - note we're not setting name field as it's not required
         cursor.execute(
             "INSERT INTO users (username, password, email, is_admin) VALUES (%s, %s, %s, %s)",
-            (username, password, email, is_admin)
+            (username, generate_password_hash(password), email, is_admin)
         )
         connection.commit()
         new_user_id = cursor.lastrowid

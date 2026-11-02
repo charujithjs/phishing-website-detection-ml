@@ -31,31 +31,32 @@ except:
     legitimate_df = pd.DataFrame()
     print("Warning: Dataset files not found. Using empty dataframes.")
 
-# Initialize default admin user if not exists
-admin_user = db.get_user_by_username("admin")
-if not admin_user:
-    logger.info("Creating default admin user")
-    # Create admin user with name "CHARUJITH J S"
-    admin_id = db.create_user("admin", "admin123", "admin@phishguard.com", is_admin=True)
-    if admin_id:
-        # Update admin user's name to "CHARUJITH J S"
+# Optional: create an admin account on first run.
+# Set ADMIN_USERNAME and ADMIN_PASSWORD (and optionally ADMIN_EMAIL and ADMIN_NAME)
+# as environment variables before starting the app. No default accounts are created.
+_admin_username = os.environ.get("ADMIN_USERNAME")
+_admin_password = os.environ.get("ADMIN_PASSWORD")
+if _admin_username and _admin_password and not db.get_user_by_username(_admin_username):
+    logger.info("Creating admin user from environment settings")
+    _admin_id = db.create_user(
+        _admin_username,
+        _admin_password,
+        os.environ.get("ADMIN_EMAIL", f"{_admin_username}@example.com"),
+        is_admin=True,
+    )
+    _admin_name = os.environ.get("ADMIN_NAME")
+    if _admin_id and _admin_id > 0 and _admin_name:
         connection = db.get_connection()
         if connection:
             cursor = connection.cursor()
             try:
-                cursor.execute("UPDATE users SET name = %s WHERE id = %s", ("CHARUJITH J S", admin_id))
+                cursor.execute("UPDATE users SET name = %s WHERE id = %s", (_admin_name, _admin_id))
                 connection.commit()
             except Exception as e:
                 logger.error(f"Error updating admin name: {e}")
             finally:
                 cursor.close()
                 connection.close()
-
-# Initialize default regular user if not exists
-regular_user = db.get_user_by_username("user")
-if not regular_user:
-    logger.info("Creating default regular user")
-    db.create_user("user", "user123", "user@example.com", is_admin=False)
 
 # Get initial stats from database
 stats = db.get_stats()
@@ -263,7 +264,7 @@ def login():
         
         user = db.get_user_by_username(username)
         
-        if user and user['password'] == password:
+        if user and db.verify_user_password(user, password):
             session['authenticated'] = True
             session['username'] = username
             session['user_id'] = user['id']
@@ -301,7 +302,7 @@ def register():
                                   form_data={'username': username, 'email': email})
         
         # Create new user in database
-        # In a production app, you would hash the password before storing
+        # The password is hashed inside db.create_user before it is stored
         try:
             user_id = db.create_user(username, password, email, is_admin=False)
             
