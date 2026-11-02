@@ -1,0 +1,1246 @@
+{% extends 'base.html' %}
+
+{% block title %}Education - PhishGuard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .education-section {
+        padding: 3rem 0;
+    }
+    
+    .education-header {
+        margin-bottom: 3rem;
+        text-align: center;
+    }
+    
+    .education-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: var(--dark);
+    }
+    
+    .education-subtitle {
+        font-size: 1.1rem;
+        color: #777;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    
+    .education-nav {
+        background-color: white;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        margin-bottom: 2rem;
+        position: sticky;
+        top: 80px;
+        z-index: 100;
+    }
+    
+    .education-nav-list {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        overflow-x: auto;
+    }
+    
+    .education-nav-item {
+        flex: 0 0 auto;
+    }
+    
+    .education-nav-link {
+        display: block;
+        padding: 1rem 1.5rem;
+        color: var(--dark);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+        border-bottom: 3px solid transparent;
+    }
+    
+    .education-nav-link:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+        color: var(--primary);
+    }
+    
+    .education-nav-link.active {
+        color: var(--primary);
+        border-bottom-color: var(--primary);
+    }
+    
+    .education-content {
+        background-color: white;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .education-section-title {
+        font-size: 1.75rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: var(--dark);
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .education-card {
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        margin-bottom: 1.5rem;
+        border: none;
+        background-color: white;
+        height: 100%;
+    }
+    
+    .education-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .education-card-img {
+        height: 200px;
+        object-fit: cover;
+    }
+    
+    .education-card-body {
+        padding: 1.5rem;
+    }
+    
+    .education-card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+    
+    .phishing-example {
+        background-color: #f8f9fa;
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        border-left: 4px solid var(--primary);
+    }
+    
+    .phishing-example-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+    }
+    
+    .phishing-example-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--dark);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .phishing-example-title i {
+        color: var(--primary);
+    }
+    
+    .phishing-example-image {
+        width: 100%;
+        border-radius: var(--border-radius);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1rem;
+    }
+    
+    .phishing-example-indicators {
+        margin-top: 1rem;
+    }
+    
+    .phishing-indicator {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .phishing-indicator:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+    }
+    
+    .phishing-indicator-number {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        background-color: var(--primary);
+        color: white;
+        font-weight: 600;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+    
+    .phishing-indicator-content h4 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--dark);
+    }
+    
+    .timeline {
+        position: relative;
+        padding: 2rem 0;
+    }
+    
+    .timeline::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        width: 2px;
+        height: 100%;
+        background-color: var(--primary);
+        transform: translateX(-50%);
+    }
+    
+    .timeline-item {
+        position: relative;
+        margin-bottom: 2rem;
+    }
+    
+    .timeline-content {
+        position: relative;
+        width: calc(50% - 30px);
+        padding: 1.5rem;
+        background-color: white;
+        border-radius: var(--border-radius);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+    }
+    
+    .timeline-content:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .timeline-item:nth-child(odd) .timeline-content {
+        margin-left: auto;
+    }
+    
+    .timeline-item:nth-child(odd) .timeline-content::before {
+        content: '';
+        position: absolute;
+        top: 20px;
+        left: -10px;
+        width: 20px;
+        height: 20px;
+        background-color: white;
+        transform: rotate(45deg);
+        box-shadow: -5px 5px 5px rgba(0, 0, 0, 0.05);
+    }
+    
+    .timeline-item:nth-child(even) .timeline-content::before {
+        content: '';
+        position: absolute;
+        top: 20px;
+        right: -10px;
+        width: 20px;
+        height: 20px;
+        background-color: white;
+        transform: rotate(45deg);
+        box-shadow: 5px -5px 5px rgba(0, 0, 0, 0.05);
+    }
+    
+    .timeline-dot {
+        position: absolute;
+        top: 20px;
+        left: 50%;
+        width: 20px;
+        height: 20px;
+        background-color: var(--primary);
+        border-radius: 50%;
+        transform: translateX(-50%);
+        z-index: 1;
+        box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.3);
+    }
+    
+    .timeline-date {
+        font-size: 0.9rem;
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+    }
+    
+    .timeline-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+    
+    .feature-explanation {
+        margin-bottom: 2rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .feature-explanation:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+    }
+    
+    .feature-explanation-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .feature-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 50px;
+        height: 50px;
+        background-color: rgba(52, 152, 219, 0.1);
+        color: var(--primary);
+        font-size: 1.5rem;
+        border-radius: 50%;
+    }
+    
+    .feature-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--dark);
+    }
+    
+    .feature-importance {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
+    
+    .importance-bar {
+        height: 8px;
+        background-color: #f1f1f1;
+        border-radius: 4px;
+        overflow: hidden;
+        flex: 1;
+    }
+    
+    .importance-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #3498db, #2980b9);
+        border-radius: 4px;
+    }
+    
+    .importance-label {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--primary);
+    }
+    
+    .quiz-card {
+        background-color: white;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        margin-bottom: 2rem;
+        border: none;
+        padding: 2rem;
+    }
+    
+    .quiz-question {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: var(--dark);
+    }
+    
+    .quiz-options {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .quiz-option {
+        margin-bottom: 1rem;
+    }
+    
+    .quiz-option-label {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        border: 1px solid #e0e0e0;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .quiz-option-label:hover {
+        background-color: rgba(52, 152, 219, 0.05);
+        border-color: var(--primary);
+    }
+    
+    .quiz-option-input {
+        margin-right: 1rem;
+    }
+    
+    .quiz-option-input:checked + .quiz-option-label {
+        background-color: rgba(52, 152, 219, 0.1);
+        border-color: var(--primary);
+    }
+    
+    .quiz-submit {
+        margin-top: 1.5rem;
+    }
+    
+    .quiz-result {
+        margin-top: 1.5rem;
+        padding: 1rem;
+        border-radius: var(--border-radius);
+        display: none;
+    }
+    
+    .quiz-result-correct {
+        background-color: rgba(46, 204, 113, 0.1);
+        border: 1px solid var(--success);
+        color: #27ae60;
+    }
+    
+    .quiz-result-incorrect {
+        background-color: rgba(231, 76, 60, 0.1);
+        border: 1px solid var(--danger);
+        color: #c0392b;
+    }
+    
+    .resource-card {
+        display: flex;
+        background-color: white;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        margin-bottom: 1.5rem;
+        border: none;
+    }
+    
+    .resource-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .resource-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 80px;
+        background-color: var(--primary);
+        color: white;
+        font-size: 2rem;
+    }
+    
+    .resource-content {
+        padding: 1.5rem;
+        flex: 1;
+    }
+    
+    .resource-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--dark);
+    }
+    
+    .resource-description {
+        color: #777;
+        margin-bottom: 1rem;
+    }
+    
+    @media (max-width: 991.98px) {
+        .education-title {
+            font-size: 2rem;
+        }
+        
+        .education-nav {
+            top: 70px;
+        }
+    }
+    
+    @media (max-width: 767.98px) {
+        .education-title {
+            font-size: 1.75rem;
+        }
+        
+        .timeline::before {
+            left: 30px;
+        }
+        
+        .timeline-content {
+            width: calc(100% - 60px);
+            margin-left: 60px !important;
+        }
+        
+        .timeline-item:nth-child(odd) .timeline-content::before,
+        .timeline-item:nth-child(even) .timeline-content::before {
+            left: -10px;
+            right: auto;
+        }
+        
+        .timeline-dot {
+            left: 30px;
+        }
+        
+        .education-nav-list {
+            flex-wrap: nowrap;
+            justify-content: flex-start;
+        }
+        
+        .education-nav-link {
+            padding: 0.75rem 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="education-section">
+    <div class="container">
+        <!-- Education Header -->
+        <div class="education-header">
+            <h1 class="education-title">Phishing Education Center</h1>
+            <p class="education-subtitle">Learn about phishing attacks, how to identify them, and protect yourself from becoming a victim.</p>
+        </div>
+        
+        <!-- Education Navigation -->
+        <div class="education-nav">
+            <ul class="education-nav-list">
+                <li class="education-nav-item">
+                    <a class="education-nav-link active" href="#introduction">Introduction</a>
+                </li>
+                <li class="education-nav-item">
+                    <a class="education-nav-link" href="#types">Types of Phishing</a>
+                </li>
+                <li class="education-nav-item">
+                    <a class="education-nav-link" href="#examples">Real Examples</a>
+                </li>
+                <li class="education-nav-item">
+                    <a class="education-nav-link" href="#history">History</a>
+                </li>
+                <li class="education-nav-item">
+                    <a class="education-nav-link" href="#features">Detection Features</a>
+                </li>
+                <li class="education-nav-item">
+                    <a class="education-nav-link" href="#quiz">Test Your Knowledge</a>
+                </li>
+                <li class="education-nav-item">
+                    <a class="education-nav-link" href="#resources">Resources</a>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- Introduction Section -->
+        <div id="introduction" class="education-content animate-on-scroll">
+            <h2 class="education-section-title">Introduction to Phishing</h2>
+            
+            <p>Phishing is a type of social engineering attack often used to steal user data, including login credentials and credit card numbers. It occurs when an attacker, masquerading as a trusted entity, dupes a victim into opening an email, instant message, or text message.</p>
+            
+            <p>The recipient is then tricked into clicking a malicious link, which can lead to the installation of malware, the freezing of the system as part of a ransomware attack, or the revealing of sensitive information.</p>
+            
+            <div class="row mt-4">
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-exclamation-triangle text-danger me-2"></i> Why Phishing Works</h5>
+                            <p class="card-text">Phishing attacks work because they exploit human psychology rather than technical vulnerabilities. They rely on:</p>
+                            <ul>
+                                <li>Creating a sense of urgency</li>
+                                <li>Exploiting fear or curiosity</li>
+                                <li>Impersonating trusted entities</li>
+                                <li>Using legitimate-looking designs</li>
+                                <li>Taking advantage of users' lack of awareness</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-shield-alt text-primary me-2"></i> Phishing by the Numbers</h5>
+                            <p class="card-text">Phishing remains one of the most prevalent cyber threats:</p>
+                            <ul>
+                                <li>Over 3.4 billion phishing emails are sent daily</li>
+                                <li>Phishing accounts for more than 80% of reported security incidents</li>
+                                <li>The average cost of a phishing attack on a mid-sized company is $1.6 million</li>
+                                <li>90% of data breaches start with a phishing attack</li>
+                                <li>The number of phishing sites has increased by 350% since 2020</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="alert alert-info mt-4">
+                <div class="d-flex">
+                    <div class="me-3">
+                        <i class="fas fa-info-circle fa-2x"></i>
+                    </div>
+                    <div>
+                        <h5>Did You Know?</h5>
+                        <p class="mb-0">The term "phishing" originated in the mid-1990s among hackers who were "fishing" for information. The "ph" is a nod to "phone phreaking," an early form of hacking that involved manipulating telephone systems.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Types of Phishing Section -->
+        <div id="types" class="education-content animate-on-scroll">
+            <h2 class="education-section-title">Types of Phishing Attacks</h2>
+            
+            <p>Phishing attacks come in many forms, each with its own characteristics and targeting methods. Understanding the different types can help you better protect yourself.</p>
+            
+            <div class="row mt-4">
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="education-card">
+                        <img src="{{ url_for('static', filename='images/email-phishing.jpg') }}" class="education-card-img" alt="Email Phishing">
+                        <div class="education-card-body">
+                            <h3 class="education-card-title">Email Phishing</h3>
+                            <p>The most common type where attackers send emails pretending to be from legitimate companies, asking users to verify information or click on malicious links.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="education-card">
+                        <img src="{{ url_for('static', filename='images/spear-phishing.jpg') }}" class="education-card-img" alt="Spear Phishing">
+                        <div class="education-card-body">
+                            <h3 class="education-card-title">Spear Phishing</h3>
+                            <p>Targeted attacks directed at specific individuals or companies, often using personalized information to appear more legitimate.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="education-card">
+                        <img src="{{ url_for('static', filename='images/whaling.jpg') }}" class="education-card-img" alt="Whaling">
+                        <div class="education-card-body">
+                            <h3 class="education-card-title">Whaling</h3>
+                            <p>A form of spear phishing that specifically targets high-profile executives or other high-value targets within an organization.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="education-card">
+                        <img src="{{ url_for('static', filename='images/smishing.jpg') }}" class="education-card-img" alt="Smishing">
+                        <div class="education-card-body">
+                            <h3 class="education-card-title">Smishing</h3>
+                            <p>Phishing conducted via SMS text messages, often containing malicious links or requesting sensitive information.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="education-card">
+                        <img src="{{ url_for('static', filename='images/vishing.jpg') }}" class="education-card-img" alt="Vishing">
+                        <div class="education-card-body">
+                            <h3 class="education-card-title">Vishing</h3>
+                            <p>Voice phishing that uses phone calls to deceive victims into revealing personal or financial information.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="education-card">
+                        <img src="{{ url_for('static', filename='images/pharming.jpg') }}" class="education-card-img" alt="Pharming">
+                        <div class="education-card-body">
+                            <h3 class="education-card-title">Pharming</h3>
+                            <p>Redirects users from legitimate websites to fraudulent ones, often without any action from the user other than visiting the compromised site.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Real Examples Section -->
+        <div id="examples" class="education-content animate-on-scroll">
+            <h2 class="education-section-title">Real Phishing Examples</h2>
+            
+            <p>Examining real phishing attempts can help you recognize the warning signs. Here are some common examples of phishing attacks that you might encounter.</p>
+            
+            <div class="phishing-example">
+                <div class="phishing-example-header">
+                    <h3 class="phishing-example-title">
+                        <i class="fas fa-envelope"></i> Banking Phishing Email
+                    </h3>
+                    <span class="badge bg-danger">High Risk</span>
+                </div>
+                
+                <img src="{{ url_for('static', filename='images/bank-phishing.jpg') }}" 
+                class="phishing-example-image" 
+                alt="Banking Phishing Email"
+                style="max-width: 100%; height: auto; width: 500px;">
+                                
+                <p>This email appears to be from a major bank, claiming that the user's account has been locked due to suspicious activity. It urges the recipient to "verify their identity" by clicking on a link that leads to a fake login page designed to steal credentials.</p>
+                
+                <div class="phishing-example-indicators">
+                    <h4>Red Flags to Notice:</h4>
+                    
+                    <div class="phishing-indicator">
+                        <div class="phishing-indicator-number">1</div>
+                        <div class="phishing-indicator-content">
+                            <h4>Generic Greeting</h4>
+                            <p>The email uses "Dear Customer" instead of your actual name, which legitimate banks would typically use.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="phishing-indicator">
+                        <div class="phishing-indicator-number">2</div>
+                        <div class="phishing-indicator-content">
+                            <h4>Urgency and Threats</h4>
+                            <p>The message creates a false sense of urgency, claiming your account will be permanently locked if you don't act immediately.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="phishing-indicator">
+                        <div class="phishing-indicator-number">3</div>
+                        <div class="phishing-indicator-content">
+                            <h4>Suspicious URL</h4>
+                            <p>Hovering over the link reveals a URL that doesn't match the official bank domain, often containing random characters or misspellings.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="phishing-indicator">
+                        <div class="phishing-indicator-number">4</div>
+                        <div class="phishing-indicator-content">
+                            <h4>Poor Grammar and Spelling</h4>
+                            <p>The email contains grammatical errors and awkward phrasing that wouldn't appear in official communications.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="phishing-example mt-4">
+                <div class="phishing-example-header">
+                    <h3 class="phishing-example-title">
+                        <i class="fas fa-shopping-cart"></i> E-commerce Order Confirmation
+                    </h3>
+                    <span class="badge bg-danger">High Risk</span>
+                </div>
+                
+                <img src="{{ url_for('static', filename='images/ecommercephishing.jpg') }}" 
+                class="phishing-example-image" 
+                alt="E-commerce Phishing Email"
+                style="max-width: 100%; height: auto; width: 500px;">
+
+                
+                <p>This email claims to be an order confirmation from a popular online retailer for an expensive item the recipient didn't purchase. It includes a button to "Cancel Order" that leads to a phishing site designed to steal account credentials or payment information.</p>
+                
+                <div class="phishing-example-indicators">
+                    <h4>Red Flags to Notice:</h4>
+                    
+                    <div class="phishing-indicator">
+                        <div class="phishing-indicator-number">1</div>
+                        <div class="phishing-indicator-content">
+                            <h4>Exploiting Concern</h4>
+                            <p>The email creates alarm about an unauthorized purchase to prompt immediate action without thinking.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="phishing-indicator">
+                        <div class="phishing-indicator-number">2</div>
+                        <div class="phishing-indicator-content">
+                            <h4>Mismatched Sender Email</h4>
+                            <p>The sender's email address doesn't match the official domain of the retailer it claims to represent.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="phishing-indicator">
+                        <div class="phishing-indicator-number">3</div>
+                        <div class="phishing-indicator-content">
+                            <h4>Lack of Order Details</h4>
+                            <p>The email lacks specific details that would normally be included in a legitimate order confirmation.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="phishing-indicator">
+                        <div class="phishing-indicator-number">4</div>
+                        <div class="phishing-indicator-content">
+                            <h4>Suspicious Attachment</h4>
+                            <p>The email may include an attachment claiming to be an invoice but actually contains malware.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- History Section -->
+        <div id="history" class="education-content animate-on-scroll">
+            <h2 class="education-section-title">History of Phishing</h2>
+            
+            <p>Phishing attacks have evolved significantly over the years, becoming more sophisticated and harder to detect. Understanding this evolution helps us appreciate the importance of modern detection methods.</p>
+            
+            <div class="timeline mt-5">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">1990s</div>
+                        <h3 class="timeline-title">The Birth of Phishing</h3>
+                        <p>The first recorded phishing attacks occurred in the mid-1990s when hackers impersonated AOL staff to steal user credentials. The term "phishing" was coined during this period.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">Early 2000s</div>
+                        <h3 class="timeline-title">E-commerce Targeting</h3>
+                        <p>As e-commerce grew, phishers began targeting payment services like PayPal and online banking platforms, creating fake websites to steal financial information.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">2005-2010</div>
+                        <h3 class="timeline-title">Rise of Spear Phishing</h3>
+                        <p>Attackers began using more targeted approaches, researching specific individuals or organizations to create highly personalized and convincing phishing attempts.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">2010-2015</div>
+                        <h3 class="timeline-title">Social Media Phishing</h3>
+                        <p>With the rise of social networks, phishers expanded to platforms like Facebook and Twitter, using fake login pages and malicious apps to steal credentials.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">2015-2020</div>
+                        <h3 class="timeline-title">Mobile Phishing</h3>
+                        <p>As smartphone usage increased, so did mobile-specific phishing tactics like smishing (SMS phishing) and malicious apps designed to steal sensitive information.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">2020-Present</div>
+                        <h3 class="timeline-title">AI-Enhanced Phishing</h3>
+                        <p>Modern phishing attacks use artificial intelligence to create more convincing emails, deepfakes for voice phishing, and automated systems that can adapt to security measures.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Detection Features Section -->
+        <div id="features" class="education-content animate-on-scroll">
+            <h2 class="education-section-title">Phishing Detection Features</h2>
+            
+            <p>PhishGuard uses machine learning to analyze multiple features of URLs and websites to determine if they're legitimate or phishing attempts. Understanding these features can help you manually identify suspicious links.</p>
+            
+            <div class="feature-explanation">
+                <div class="feature-explanation-header">
+                    <div class="feature-icon">
+                        <i class="fas fa-link"></i>
+                    </div>
+                    <div>
+                        <h3 class="feature-title">URL Length</h3>
+                        <div class="feature-importance">
+                            <div class="importance-bar">
+                                <div class="importance-fill" style="width: 85%"></div>
+                            </div>
+                            <span class="importance-label">High Importance</span>
+                        </div>
+                    </div>
+                </div>
+                <p>Phishing URLs tend to be significantly longer than legitimate ones. Attackers often use lengthy URLs to hide the actual destination or to include additional parameters that can be used for tracking or redirecting users.</p>
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <div class="alert alert-danger">
+                            <strong>Suspicious Example:</strong><br>
+                            https://paypal-secure-account-login-verification-center.customer-service.security-check.randomdomain.com/login.php
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="alert alert-success">
+                            <strong>Legitimate Example:</strong><br>
+                            https://www.paypal.com/signin
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="feature-explanation">
+                <div class="feature-explanation-header">
+                    <div class="feature-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <div>
+                        <h3 class="feature-title">Domain Age</h3>
+                        <div class="feature-importance">
+                            <div class="importance-bar">
+                                <div class="importance-fill" style="width: 78%"></div>
+                            </div>
+                            <span class="importance-label">High Importance</span>
+                        </div>
+                    </div>
+                </div>
+                <p>Phishing websites typically have very recent domain registration dates. Most phishing sites are active for a short period before being detected and taken down, so attackers frequently create new domains.</p>
+                <div class="alert alert-info mt-3">
+                    <strong>Key Insight:</strong> If a website claims to be a well-established company but the domain was registered less than 6 months ago, this is a strong indicator of a phishing attempt.
+                </div>
+            </div>
+            
+            <div class="feature-explanation">
+                <div class="feature-explanation-header">
+                    <div class="feature-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <div>
+                        <h3 class="feature-title">HTTPS Usage</h3>
+                        <div class="feature-importance">
+                            <div class="importance-bar">
+                                <div class="importance-fill" style="width: 72%"></div>
+                            </div>
+                            <span class="importance-label">High Importance</span>
+                        </div>
+                    </div>
+                </div>
+                <p>While legitimate websites typically use HTTPS encryption, the absence of HTTPS is a red flag. However, many phishing sites now also use HTTPS, so this feature alone isn't sufficient for detection.</p>
+                <div class="alert alert-warning mt-3">
+                    <strong>Important Note:</strong> The presence of HTTPS (padlock icon) only means the connection is encrypted, not that the website is legitimate. Always check the actual domain name carefully.
+                </div>
+            </div>
+            
+            <div class="feature-explanation">
+                <div class="feature-explanation-header">
+                    <div class="feature-icon">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <div>
+                        <h3 class="feature-title">IP Address in URL</h3>
+                        <div class="feature-importance">
+                            <div class="importance-bar">
+                                <div class="importance-fill" style="width: 68%"></div>
+                            </div>
+                            <span class="importance-label">Medium-High Importance</span>
+                        </div>
+                    </div>
+                </div>
+                <p>Legitimate websites almost never use IP addresses in their URLs. If you see a URL that contains an IP address (e.g., http://192.168.1.1/login), it's likely a phishing attempt.</p>
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <div class="alert alert-danger">
+                            <strong>Suspicious Example:</strong><br>
+                            http://123.45.67.89/amazon/login.html
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="alert alert-success">
+                            <strong>Legitimate Example:</strong><br>
+                            https://www.amazon.com/login
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="feature-explanation">
+                <div class="feature-explanation-header">
+                    <div class="feature-icon">
+                        <i class="fas fa-random"></i>
+                    </div>
+                    <div>
+                        <h3 class="feature-title">Redirects</h3>
+                        <div class="feature-importance">
+                            <div class="importance-bar">
+                                <div class="importance-fill" style="width: 65%"></div>
+                            </div>
+                            <span class="importance-label">Medium-High Importance</span>
+                        </div>
+                    </div>
+                </div>
+                <p>Multiple redirects in a URL chain can indicate a phishing attempt. Attackers often use redirects to mask the final destination or to evade detection systems.</p>
+                <div class="alert alert-info mt-3">
+                    <strong>Detection Method:</strong> PhishGuard follows all redirects in a URL chain to analyze the final destination, which helps identify phishing attempts that use legitimate services for initial redirects.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quiz Section -->
+        <div id="quiz" class="education-content animate-on-scroll">
+            <h2 class="education-section-title">Test Your Knowledge</h2>
+            
+            <p>Now that you've learned about phishing, test your knowledge with this quick quiz to see if you can identify phishing attempts.</p>
+            
+            <div class="quiz-card">
+                <h3 class="quiz-question">1. Which of the following is a strong indicator that an email might be a phishing attempt?</h3>
+                <ul class="quiz-options">
+                    <li class="quiz-option">
+                        <input type="radio" name="q1" id="q1a" class="quiz-option-input">
+                        <label for="q1a" class="quiz-option-label">The email contains the company's official logo</label>
+                    </li>
+                    <li class="quiz-option">
+                        <input type="radio" name="q1" id="q1b" class="quiz-option-input">
+                        <label for="q1b" class="quiz-option-label">The email creates a sense of urgency and threatens negative consequences</label>
+                    </li>
+                    <li class="quiz-option">
+                        <input type="radio" name="q1" id="q1c" class="quiz-option-input">
+                        <label for="q1c" class="quiz-option-label">The email was sent during business hours</label>
+                    </li>
+                    <li class="quiz-option">
+                        <input type="radio" name="q1" id="q1d" class="quiz-option-input">
+                        <label for="q1d" class="quiz-option-label">The email includes contact information for the company</label>
+                    </li>
+                </ul>
+                <div class="quiz-result" id="q1-result"></div>
+            </div>
+            
+            <div class="quiz-card">
+                <h3 class="quiz-question">2. You receive an email claiming to be from your bank asking you to verify your account information. What should you do?</h3>
+                <ul class="quiz-options">
+                    <li class="quiz-option">
+                        <input type="radio" name="q2" id="q2a" class="quiz-option-input">
+                        <label for="q2a" class="quiz-option-label">Click the link in the email and enter your information to verify your account</label>
+                    </li>
+                    <li class="quiz-option">
+                        <input type="radio" name="q2" id="q2b" class="quiz-option-input">
+                        <label for="q2b" class="quiz-option-label">Reply to the email with your account information</label>
+                    </li>
+                    <li class="quiz-option">
+                        <input type="radio" name="q2" id="q2c" class="quiz-option-input">
+                        <label for="q2c" class="quiz-option-label">Ignore the email and contact your bank directly using the phone number on their official website</label>
+                    </li>
+                    <li class="quiz-option">
+                        <input type="radio" name="q2" id="q2d" class="quiz-option-input">
+                        <label for="q2d" class="quiz-option-label">Forward the email to friends to see if they received the same message</label>
+                    </li>
+                </ul>
+                <div class="quiz-result" id="q2-result"></div>
+            </div>
+            
+            <div class="quiz-card">
+                <h3 class="quiz-question">3. Which of the following URLs is most likely to be a phishing site?</h3>
+                <ul class="quiz-options">
+                    <li class="quiz-option">
+                        <input type="radio" name="q3" id="q3a" class="quiz-option-input">
+                        <label for="q3a" class="quiz-option-label">https://www.paypal.com/signin</label>
+                    </li>
+                    <li class="quiz-option">
+                        <input type="radio" name="q3" id="q3b" class="quiz-option-input">
+                        <label for="q3b" class="quiz-option-label">https://accounts.google.com/login</label>
+                    </li>
+                    <li class="quiz-option">
+                        <input type="radio" name="q3" id="q3c" class="quiz-option-input">
+                        <label for="q3c" class="quiz-option-label">https://www.amazon.com/account</label>
+                    </li>
+                    <li class="quiz-option">
+                        <input type="radio" name="q3" id="q3d" class="quiz-option-input">
+                        <label for="q3d" class="quiz-option-label">https://paypal-secure-login.com/verification</label>
+                    </li>
+                </ul>
+                <div class="quiz-result" id="q3-result"></div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <button class="btn btn-primary btn-lg" id="check-answers">
+                    <i class="fas fa-check-circle me-2"></i> Check Answers
+                </button>
+            </div>
+        </div>
+        
+        <!-- Resources Section -->
+        <div id="resources" class="education-content animate-on-scroll">
+            <h2 class="education-section-title">Additional Resources</h2>
+            
+            <p>Want to learn more about phishing and how to protect yourself? Check out these valuable resources.</p>
+            
+            <div class="resource-card">
+                <div class="resource-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div class="resource-content">
+                    <h3 class="resource-title">CISA Phishing Guide</h3>
+                    <p class="resource-description">Comprehensive guide from the Cybersecurity and Infrastructure Security Agency on recognizing and avoiding phishing attacks.</p>
+                    <a href="https://www.cisa.gov/sites/default/files/publications/Phishing_Tip_Sheet.pdf" class="btn btn-outline-primary" target="_blank">
+                        <i class="fas fa-external-link-alt me-2"></i> View Resource
+                    </a>
+                </div>
+            </div>
+            
+            <div class="resource-card">
+                <div class="resource-icon">
+                    <i class="fas fa-video"></i>
+                </div>
+                <div class="resource-content">
+                    <h3 class="resource-title">Phishing Awareness Training Videos</h3>
+                    <p class="resource-description">A collection of educational videos demonstrating common phishing techniques and how to avoid them.</p>
+                    <a href="https://youtu.be/WNVTGTrWcvw?si=WhyWcXiHbsKgX1GS" class="btn btn-outline-primary" target="_blank">
+                        <i class="fas fa-play me-2"></i> Watch Videos
+                    </a>
+                </div>
+            </div>
+            
+            <div class="resource-card">
+                <div class="resource-icon">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <div class="resource-content">
+                    <h3 class="resource-title">Anti-Phishing Tools</h3>
+                    <p class="resource-description">Recommended browser extensions and security tools to help protect against phishing attacks.</p>
+                    <a href="https://www.google.com/search?sca_esv=3f991894fcbd4882&rlz=1C1UEAD_enIN1115IN1116&sxsrf=AHTn8zreq7HWgJTt_tbE30f0guIaOu5etQ:1746341556609&q=Anti-Phishing+Tools&source=lnms&fbs=ABzOT_CWdhQLP1FcmU5B0fn3xuWpA-dk4wpBWOGsoR7DG5zJBjLjqIC1CYKD9D-DQAQS3Z598VAVBnbpHrmLO7c8q4i2iShGrx-5yYn4jXq0_kABhDhNfElS150uIPqHyw4WjeP5VgfrDV4E8bSTXDjOhg2hHRJC2DX4C8IZCyvW-ITPBhhmnJOrNpA7wIquSZIhDwFCSujkSg2rVNM6-2YPwyUPwDpejw&sa=X&ved=2ahUKEwiCo42hnYmNAxW7bPUHHbZQAIgQ0pQJegQIGBAB&biw=1396&bih=632&dpr=1.38" class="btn btn-outline-primary" target="_blank">
+                        <i class="fas fa-shield-alt me-2"></i> View Tools
+                    </a>
+                </div>
+            </div>
+            
+            <div class="resource-card">
+                <div class="resource-icon">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <div class="resource-content">
+                    <h3 class="resource-title">Phishing Reporting</h3>
+                    <p class="resource-description">Information on how and where to report phishing attempts to help protect others.</p>
+                    <a href="https://safebrowsing.google.com/safebrowsing/report_phish/" class="btn btn-outline-primary" target="_blank">
+                        <i class="fas fa-exclamation-triangle me-2"></i> Learn How to Report
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Smooth scrolling for navigation links
+        const navLinks = document.querySelectorAll('.education-nav-link');
+        
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all links
+                navLinks.forEach(l => l.classList.remove('active'));
+                
+                // Add active class to clicked link
+                this.classList.add('active');
+                
+                // Get the target section
+                const targetId = this.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                
+                // Scroll to the target section with offset for the sticky header
+                const offset = 100;
+                const targetPosition = targetSection.getBoundingClientRect().top + window.pageYOffset - offset;
+                
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // Update active nav link on scroll
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('.education-content');
+            const scrollPosition = window.scrollY + 150;
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                const sectionId = section.getAttribute('id');
+                
+                if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${sectionId}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        });
+        
+        // Quiz functionality
+        const checkAnswersBtn = document.getElementById('check-answers');
+        
+        if (checkAnswersBtn) {
+            checkAnswersBtn.addEventListener('click', function() {
+                // Question 1
+                const q1Selected = document.querySelector('input[name="q1"]:checked');
+                const q1Result = document.getElementById('q1-result');
+                
+                if (q1Selected) {
+                    if (q1Selected.id === 'q1b') {
+                        q1Result.textContent = 'Correct! Phishing emails often create a sense of urgency to make you act without thinking.';
+                        q1Result.className = 'quiz-result quiz-result-correct';
+                    } else {
+                        q1Result.textContent = 'Incorrect. Phishing emails often create a sense of urgency to make you act without thinking.';
+                        q1Result.className = 'quiz-result quiz-result-incorrect';
+                    }
+                    q1Result.style.display = 'block';
+                }
+                
+                // Question 2
+                const q2Selected = document.querySelector('input[name="q2"]:checked');
+                const q2Result = document.getElementById('q2-result');
+                
+                if (q2Selected) {
+                    if (q2Selected.id === 'q2c') {
+                        q2Result.textContent = 'Correct! Always contact your bank directly using their official contact information, not through links in emails.';
+                        q2Result.className = 'quiz-result quiz-result-correct';
+                    } else {
+                        q2Result.textContent = 'Incorrect. You should never click links in suspicious emails or provide information. Always contact your bank directly.';
+                        q2Result.className = 'quiz-result quiz-result-incorrect';
+                    }
+                    q2Result.style.display = 'block';
+                }
+                
+                // Question 3
+                const q3Selected = document.querySelector('input[name="q3"]:checked');
+                const q3Result = document.getElementById('q3-result');
+                
+                if (q3Selected) {
+                    if (q3Selected.id === 'q3d') {
+                        q3Result.textContent = 'Correct! This URL uses a hyphenated domain that mimics PayPal but is not the official domain.';
+                        q3Result.className = 'quiz-result quiz-result-correct';
+                    } else {
+                        q3Result.textContent = 'Incorrect. The suspicious URL is "https://paypal-secure-login.com/verification" because it uses a hyphenated domain that mimics PayPal but is not the official domain.';
+                        q3Result.className = 'quiz-result quiz-result-incorrect';
+                    }
+                    q3Result.style.display = 'block';
+                }
+            });
+        }
+        
+        // Initialize animations for elements with animate-on-scroll class
+        const animateElements = document.querySelectorAll('.animate-on-scroll');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        animateElements.forEach(element => {
+            observer.observe(element);
+        });
+    });
+</script>
+{% endblock %}

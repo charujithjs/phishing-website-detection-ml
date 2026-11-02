@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}User Profile - PhishGuard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>User Profile</h1>
+    {% if user %}
+    <table class="table table-bordered">
+        <tr>
+            <th>Username</th>
+            <td>{{ user.username }}</td>
+        </tr>
+        <tr>
+            <th>Name</th>
+            <td>{{ user.name if user.name else user.username }}</td>
+        </tr>
+        <tr>
+            <th>Email</th>
+            <td>{{ user.email }}</td>
+        </tr>
+        <tr>
+            <th>Admin</th>
+            <td>{{ 'CHARUJITH J S' if user.is_admin else 'No' }}</td>
+        </tr>
+        <tr>
+            <th>Created At</th>
+            <td>{{ user.created_at }}</td>
+        </tr>
+    </table>
+    {% else %}
+    <p>User information not available.</p>
+    {% endif %}
+</div>
+{% endblock %}

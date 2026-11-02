@@ -1,0 +1,612 @@
+{% extends 'welcome_layout.html' %}
+
+{% block title %}Welcome to PhishGuard{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        background: linear-gradient(135deg, #0a192f, #112240);
+    }
+    
+    .welcome-container {
+        min-height: 100vh;
+        padding: 2rem 0;
+        position: relative;
+    }
+    
+    .welcome-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        padding-top: 2rem;
+    }
+    
+    .welcome-title {
+        font-size: 2.5rem;
+        color: white;
+        margin-bottom: 1rem;
+        text-shadow: 0 0 15px rgba(52, 152, 219, 0.7);
+    }
+    
+    .welcome-subtitle {
+        font-size: 1.2rem;
+        color: rgba(255, 255, 255, 0.7);
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    
+    .modules-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+    }
+    
+    @media (min-width: 1200px) {
+        .modules-container {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+    
+    @media (min-width: 992px) and (max-width: 1199px) {
+        .modules-container {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    
+    .module-card {
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+        overflow: hidden;
+        position: relative;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+    
+    .module-header {
+        background: rgba(52, 152, 219, 0.2);
+        padding: 1.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .module-icon {
+        font-size: 2.5rem;
+        color: var(--primary);
+        margin-bottom: 1rem;
+        filter: drop-shadow(0 0 10px rgba(52, 152, 219, 0.7));
+    }
+    
+    .module-title {
+        font-size: 1.5rem;
+        color: white;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+    }
+    
+    .module-subtitle {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+    }
+    
+    .module-body {
+        padding: 1.5rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .module-description {
+        color: rgba(255, 255, 255, 0.8);
+        margin-bottom: 1.5rem;
+        flex-grow: 1;
+        line-height: 1.6;
+    }
+    
+    .module-features {
+        margin-bottom: 1.5rem;
+    }
+    
+    .module-feature {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.75rem;
+        color: rgba(255, 255, 255, 0.7);
+    }
+    
+    .module-feature i {
+        color: var(--success);
+        margin-right: 0.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .module-footer {
+        padding: 1.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        text-align: center;
+    }
+    
+    .btn-explore {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 500;
+        width: 100%;
+        text-decoration: none;
+        display: inline-block;
+        box-shadow: 0 0 15px rgba(52, 152, 219, 0.5);
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 1rem;
+    }
+    
+    .btn-explore i {
+        margin-left: 0.5rem;
+    }
+    
+    .welcome-footer {
+        text-align: center;
+        margin-top: 4rem;
+        padding: 2rem 0;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 0.9rem;
+        animation: fadeInUp 0.8s ease;
+        animation-delay: 0.4s;
+    }
+    
+    .welcome-footer a {
+        color: var(--primary);
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .welcome-footer a:hover {
+        color: white;
+    }
+    
+    /* Particle background */
+    .particles-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        overflow: hidden;
+    }
+    
+    .particle {
+        position: absolute;
+        border-radius: 50%;
+        opacity: 0.5;
+        animation: float 15s infinite linear;
+    }
+    
+    @keyframes float {
+        0% {
+            transform: translateY(0) rotate(0deg);
+        }
+        100% {
+            transform: translateY(-100vh) rotate(360deg);
+        }
+    }
+    
+    /* Animations */
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.7);
+        }
+        70% {
+            box-shadow: 0 0 0 10px rgba(52, 152, 219, 0);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(52, 152, 219, 0);
+        }
+    }
+    
+    /* Navigation highlight effect */
+    @keyframes pulseHighlight {
+        0% {
+            color: white;
+            text-shadow: 0 0 10px rgba(52, 152, 219, 0.7);
+            transform: scale(1.1);
+        }
+        50% {
+            color: var(--primary);
+            text-shadow: 0 0 20px rgba(52, 152, 219, 1);
+            transform: scale(1.2);
+        }
+        100% {
+            color: white;
+            text-shadow: 0 0 10px rgba(52, 152, 219, 0.7);
+            transform: scale(1.1);
+        }
+    }
+    
+    .pulse-highlight {
+        animation: pulseHighlight 0.6s ease-in-out infinite;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .modules-container {
+            grid-template-columns: 1fr;
+        }
+        
+        .welcome-title {
+            font-size: 2rem;
+        }
+    }
+    
+    /* Stats counter */
+    .stats-container {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+    
+    .stat-item {
+        text-align: center;
+        background: rgba(0, 0, 0, 0.3);
+        padding: 1.5rem;
+        border-radius: 10px;
+        min-width: 150px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+    }
+    
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+        text-shadow: 0 0 10px rgba(52, 152, 219, 0.7);
+    }
+    
+    .stat-label {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+    }
+    
+    /* User greeting */
+    .user-greeting {
+        background: rgba(0, 0, 0, 0.3);
+        max-width: 800px;
+        margin: 0 auto 3rem;
+        padding: 2rem;
+        border-radius: 10px;
+        border-left: 4px solid var(--primary);
+        text-align: center;
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .user-message h3 {
+        color: white;
+        margin-bottom: 0.8rem;
+        font-size: 1.6rem;
+    }
+    
+    .user-message p {
+        color: rgba(255, 255, 255, 0.8);
+        margin-bottom: 0;
+        font-size: 1.1rem;
+        line-height: 1.6;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="particles-container" id="particles-js"></div>
+
+<div class="welcome-container">
+    <div class="container">
+        <div class="welcome-header">
+            <h1 class="welcome-title">Welcome to PhishGuard</h1>
+            <p class="welcome-subtitle">Your comprehensive platform for phishing detection and cybersecurity protection. Explore the modules below to get started.</p>
+        </div>
+        
+        {% if is_new_user %}
+        <div class="user-greeting" style="border-left: 4px solid var(--success); background: rgba(46, 204, 113, 0.2);">
+            <div class="user-message">
+                <h3>Welcome to PhishGuard, {{ session.username }}!</h3>
+                <p>Thank you for registering! Your account has been successfully created. Explore the modules below to get started with protecting yourself from phishing attacks.</p>
+            </div>
+        </div>
+        {% else %}
+        <div class="user-greeting">
+            <div class="user-message">
+                <h3>Hello, {{ session.username }}!</h3>
+                <p>Welcome to your PhishGuard dashboard. We're glad to have you here. Explore the modules below to protect yourself from phishing attacks.</p>
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="stats-container">
+            <div class="stat-item">
+                <div class="stat-value" id="totalScans">{{ stats.total_scans }}</div>
+                <div class="stat-label">Total Scans</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="safeUrls">{{ stats.safe_urls }}</div>
+                <div class="stat-label">Safe URLs</div>
+            </div>
+
+            <div class="stat-item">
+                <div class="stat-value" id="phishingUrls">{{ stats.suspicious_urls }}</div>
+                <div class="stat-label">Suspicious URLs</div>
+            </div>
+        </div>
+        
+        <div class="modules-container">
+            <!-- URL Scanner Module -->
+            <div class="module-card">
+                <div class="module-header">
+                    <div class="module-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3 class="module-title">URL Scanner</h3>
+                    <p class="module-subtitle">Analyze URLs for phishing threats</p>
+                </div>
+                <div class="module-body">
+                    <p class="module-description">
+                        Our advanced URL scanner uses machine learning algorithms to detect phishing attempts and malicious websites in real-time.
+                    </p>
+                    <div class="module-features">
+                        <div class="module-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Real-time threat detection</span>
+                        </div>
+                        <div class="module-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Domain age verification</span>
+                        </div>
+                        <div class="module-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>SSL certificate validation</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="module-footer">
+                    <a href="/scan" class="btn-explore">Scan URL <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+            
+            
+            
+            <!-- Dashboard Module -->
+            <div class="module-card">
+                <div class="module-header">
+                    <div class="module-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="module-title">Dashboard</h3>
+                    <p class="module-subtitle">Your security at a glance</p>
+                </div>
+                <div class="module-body">
+                    <p class="module-description">
+                        Get a comprehensive overview of your security status with our intuitive dashboard featuring statistics, recent scans, and security insights.
+                    </p>
+                    <div class="module-features">
+                        <div class="module-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Security statistics</span>
+                        </div>
+                        <div class="module-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Recent scan summary</span>
+                        </div>
+                        <div class="module-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Threat visualization</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="module-footer">
+                    <a href="/dashboard" class="btn-explore">View Dashboard <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+            
+            
+            
+            <!-- Education Module -->
+            <div class="module-card">
+                <div class="module-header">
+                    <div class="module-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3 class="module-title">Education</h3>
+                    <p class="module-subtitle">Learn about phishing</p>
+                </div>
+                <div class="module-body">
+                    <p class="module-description">
+                        Enhance your knowledge about phishing attacks, learn how to identify threats, and discover best practices for staying safe online.
+                    </p>
+                    <div class="module-features">
+                        <div class="module-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Phishing tutorials</span>
+                        </div>
+                        <div class="module-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Security best practices</span>
+                        </div>
+                        <div class="module-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Interactive examples</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="module-footer">
+                    <a href="/education" class="btn-explore">Learn More <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="welcome-footer">
+            <p>PhishGuard &copy; 2025 | <a href="/about">About</a> </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+<script>
+    // Module navigation is now handled by direct links
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize particles.js
+        particlesJS('particles-js', {
+            "particles": {
+                "number": {
+                    "value": 80,
+                    "density": {
+                        "enable": true,
+                        "value_area": 800
+                    }
+                },
+                "color": {
+                    "value": "#3498db"
+                },
+                "shape": {
+                    "type": "circle",
+                    "stroke": {
+                        "width": 0,
+                        "color": "#000000"
+                    },
+                    "polygon": {
+                        "nb_sides": 5
+                    }
+                },
+                "opacity": {
+                    "value": 0.5,
+                    "random": true,
+                    "anim": {
+                        "enable": true,
+                        "speed": 1,
+                        "opacity_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "size": {
+                    "value": 3,
+                    "random": true,
+                    "anim": {
+                        "enable": false,
+                        "speed": 40,
+                        "size_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#3498db",
+                    "opacity": 0.4,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 2,
+                    "direction": "none",
+                    "random": false,
+                    "straight": false,
+                    "out_mode": "out",
+                    "bounce": false,
+                    "attract": {
+                        "enable": false,
+                        "rotateX": 600,
+                        "rotateY": 1200
+                    }
+                }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": {
+                        "enable": true,
+                        "mode": "grab"
+                    },
+                    "onclick": {
+                        "enable": true,
+                        "mode": "push"
+                    },
+                    "resize": true
+                },
+                "modes": {
+                    "grab": {
+                        "distance": 140,
+                        "line_linked": {
+                            "opacity": 1
+                        }
+                    },
+                    "bubble": {
+                        "distance": 400,
+                        "size": 40,
+                        "duration": 2,
+                        "opacity": 8,
+                        "speed": 3
+                    },
+                    "repulse": {
+                        "distance": 200,
+                        "duration": 0.4
+                    },
+                    "push": {
+                        "particles_nb": 4
+                    },
+                    "remove": {
+                        "particles_nb": 2
+                    }
+                }
+            },
+            "retina_detect": true
+        });
+        
+        // No animations for stats - display values directly
+        
+        // No hover effects for module cards
+    });
+</script>
+{% endblock %}

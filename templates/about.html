@@ -1,0 +1,693 @@
+{% extends 'base.html' %}
+
+{% block title %}About - PhishGuard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .about-section {
+        padding: 3rem 0;
+    }
+    
+    .about-header {
+        margin-bottom: 3rem;
+        text-align: center;
+    }
+    
+    .about-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: var(--dark);
+    }
+    
+    .about-subtitle {
+        font-size: 1.1rem;
+        color: #777;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    
+    .about-content {
+        background-color: white;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .about-section-title {
+        font-size: 1.75rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: var(--dark);
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .mission-vision-section {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        padding: 4rem 0;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .mission-vision-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url("{{ url_for('static', filename='img/cyber-pattern.png') }}");
+        opacity: 0.1;
+        z-index: 0;
+    }
+    
+    .mission-vision-content {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .mission-card, .vision-card {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: var(--border-radius);
+        padding: 2rem;
+        height: 100%;
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        transition: all 0.3s ease;
+    }
+    
+    .mission-card:hover, .vision-card:hover {
+        transform: translateY(-5px);
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .mission-title, .vision-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .mission-title i, .vision-title i {
+        font-size: 1.75rem;
+    }
+    
+    .team-section {
+        padding: 4rem 0;
+    }
+    
+    .team-card {
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        margin-bottom: 1.5rem;
+        border: none;
+        background-color: white;
+        height: 100%;
+    }
+    
+    .team-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .team-card-img {
+        height: 250px;
+        object-fit: cover;
+    }
+    
+    .team-card-body {
+        padding: 1.5rem;
+        text-align: center;
+    }
+    
+    .team-card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--dark);
+    }
+    
+    .team-card-position {
+        font-size: 0.9rem;
+        color: #777;
+        margin-bottom: 1rem;
+    }
+    
+    .team-social {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+    
+    .team-social a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background-color: #f8f9fa;
+        color: var(--dark);
+        transition: all 0.3s ease;
+    }
+    
+    .team-social a:hover {
+        background-color: var(--primary);
+        color: white;
+        transform: translateY(-3px);
+    }
+    
+    .technology-section {
+        padding: 4rem 0;
+        background-color: #f8f9fa;
+    }
+    
+    .technology-card {
+        background-color: white;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        margin-bottom: 1.5rem;
+        border: none;
+        height: 100%;
+        padding: 2rem;
+        text-align: center;
+    }
+    
+    .technology-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .technology-icon {
+        font-size: 3rem;
+        margin-bottom: 1.5rem;
+        color: var(--primary);
+        transition: all 0.3s ease;
+    }
+    
+    .technology-card:hover .technology-icon {
+        transform: scale(1.2);
+    }
+    
+    .technology-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--dark);
+    }
+    
+    .contact-section {
+        padding: 4rem 0;
+    }
+    
+    .contact-card {
+        background-color: white;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        margin-bottom: 1.5rem;
+        border: none;
+    }
+    
+    .contact-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .contact-card-header {
+        background-color: var(--dark);
+        color: white;
+        font-weight: 600;
+        padding: 1.5rem;
+        text-align: center;
+    }
+    
+    .contact-card-body {
+        padding: 2rem;
+    }
+    
+    .contact-info {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .contact-info-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .contact-info-item:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+    }
+    
+    .contact-info-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background-color: rgba(52, 152, 219, 0.1);
+        color: var(--primary);
+        font-size: 1.25rem;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+    
+    .contact-info-content h4 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--dark);
+    }
+    
+    .contact-form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .contact-form-label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        color: var(--dark);
+    }
+    
+    .contact-form-control {
+        border-radius: var(--border-radius);
+        padding: 0.75rem 1rem;
+        border: 1px solid #e0e0e0;
+        transition: all 0.3s ease;
+    }
+    
+    .contact-form-control:focus {
+        box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+        border-color: var(--primary);
+    }
+    
+    .faq-section {
+        padding: 4rem 0;
+        background-color: #f8f9fa;
+    }
+    
+    .faq-item {
+        background-color: white;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        margin-bottom: 1rem;
+        border: none;
+    }
+    
+    .faq-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .faq-question {
+        padding: 1.25rem;
+        cursor: pointer;
+        font-weight: 600;
+        color: var(--dark);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: all 0.3s ease;
+    }
+    
+    .faq-question:hover {
+        background-color: rgba(0, 0, 0, 0.02);
+    }
+    
+    .faq-question i {
+        transition: transform 0.3s ease;
+    }
+    
+    .faq-question[aria-expanded="true"] i {
+        transform: rotate(180deg);
+    }
+    
+    .faq-answer {
+        padding: 0 1.25rem 1.25rem;
+    }
+    
+    @media (max-width: 991.98px) {
+        .about-title {
+            font-size: 2rem;
+        }
+        
+        .mission-card, .vision-card {
+            margin-bottom: 1.5rem;
+        }
+    }
+    
+    @media (max-width: 767.98px) {
+        .about-title {
+            font-size: 1.75rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="about-section">
+    <div class="container">
+        <!-- About Header -->
+        <div class="about-header">
+            <h1 class="about-title">About PhishGuard</h1>
+            <p class="about-subtitle">Learn about our mission and the technology behind our phishing detection system.</p>
+        </div>
+        
+        <!-- About Content -->
+        <div class="about-content animate-on-scroll">
+            <h2 class="about-section-title">Our Story</h2>
+            
+            <p>PhishGuard was founded in 2025 with a simple yet powerful mission: to protect internet users from the growing threat of phishing attacks. As cyber threats continue to evolve and become more sophisticated, we recognized the need for an accessible, user-friendly solution that leverages advanced technology to keep people safe online.</p>
+            
+            
+            
+            <div class="row mt-4">
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <div class="display-4 text-primary mb-3">1M+</div>
+                            <h5 class="card-title">URLs Scanned</h5>
+                            <p class="card-text text-muted">Protecting users from phishing attempts every day</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <div class="display-4 text-primary mb-3">50K+</div>
+                            <h5 class="card-title">Users Protected</h5>
+                            <p class="card-text text-muted">Individuals and organizations trust PhishGuard</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <div class="display-4 text-primary mb-3">98.7%</div>
+                            <h5 class="card-title">Detection Accuracy</h5>
+                            <p class="card-text text-muted">Industry-leading precision in identifying threats</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Mission & Vision Section -->
+<div class="mission-vision-section">
+    <div class="container mission-vision-content">
+        <div class="row">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <div class="mission-card animate-on-scroll">
+                    <h2 class="mission-title">
+                        <i class="fas fa-bullseye"></i> Our Mission
+                    </h2>
+                    <p>To protect internet users from phishing attacks through innovative technology, education, and awareness. We strive to make the internet a safer place by providing accessible tools that empower individuals and organizations to identify and avoid phishing threats.</p>
+                    <p>We believe that everyone deserves to navigate the digital world without fear of having their personal information compromised. By combining cutting-edge machine learning algorithms with user-friendly interfaces, we're making advanced security accessible to all.</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="vision-card animate-on-scroll delay-1">
+                    <h2 class="vision-title">
+                        <i class="fas fa-eye"></i> Our Vision
+                    </h2>
+                    <p>A world where phishing attacks are no longer effective because users are equipped with the knowledge and tools to recognize and avoid them. We envision a future where cybersecurity education is universal, and protective technology is seamlessly integrated into everyday online activities.</p>
+                    <p>We're working toward a digital ecosystem where security doesn't come at the expense of convenience, and where even the most vulnerable internet users are protected from sophisticated phishing attempts.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Technology Section -->
+<div class="technology-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="about-title">Our Technology</h2>
+            <p class="about-subtitle">The innovative technologies powering our phishing detection system</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="technology-card animate-on-scroll">
+                    <div class="technology-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3 class="technology-title">Machine Learning</h3>
+                    <p>Our advanced machine learning algorithms analyze multiple features of URLs and websites to identify phishing attempts with high accuracy.</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="technology-card animate-on-scroll delay-1">
+                    <div class="technology-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h3 class="technology-title">Big Data Analysis</h3>
+                    <p>We process millions of URLs daily to identify patterns and emerging threats, continuously improving our detection capabilities.</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="technology-card animate-on-scroll delay-2">
+                    <div class="technology-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="technology-title">Real-time Protection</h3>
+                    <p>Our system provides instant analysis of URLs, allowing users to make informed decisions before visiting potentially dangerous websites.</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="technology-card animate-on-scroll delay-3">
+                    <div class="technology-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h3 class="technology-title">Natural Language Processing</h3>
+                    <p>We analyze the content of websites to detect suspicious language patterns commonly used in phishing attempts.</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="technology-card animate-on-scroll delay-4">
+                    <div class="technology-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="technology-title">Predictive Analytics</h3>
+                    <p>Our system can predict emerging phishing trends and adapt to new techniques before they become widespread.</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="technology-card animate-on-scroll delay-5">
+                    <div class="technology-icon">
+                        <i class="fas fa-cloud"></i>
+                    </div>
+                    <h3 class="technology-title">Cloud Infrastructure</h3>
+                    <p>Our scalable cloud architecture ensures fast, reliable performance even during peak usage periods.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Contact Section -->
+<div class="contact-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="about-title">Contact Us</h2>
+            <p class="about-subtitle">Have questions or feedback? We'd love to hear from you.</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-5 mb-4 mb-lg-0">
+                <div class="contact-card h-100 animate-on-scroll">
+                    <div class="contact-card-header">
+                        <h3>Get in Touch</h3>
+                    </div>
+                    <div class="contact-card-body">
+                        <ul class="contact-info">
+
+                            <li class="contact-info-item">
+                                <div class="contact-info-icon">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div class="contact-info-content">
+                                    <h4>Email</h4>
+                                    <p>info@phishguard.com<br>support@phishguard.com</p>
+                                </div>
+                            </li>
+                            <li class="contact-info-item">
+                                <div class="contact-info-icon">
+                                    <i class="fas fa-phone"></i>
+                                </div>
+                                <div class="contact-info-content">
+                                    <h4>Phone</h4>
+                                    <p>+91 9876543210<br>+91 9123456789</p>
+                                </div>
+                            </li>
+                    
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-7">
+                <div class="contact-card animate-on-scroll delay-1">
+                    <div class="contact-card-header">
+                        <h3>Send Us a Message</h3>
+                    </div>
+                    <div class="contact-card-body">
+                        <form>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="contact-form-group">
+                                        <label for="name" class="contact-form-label">Your Name</label>
+                                        <input type="text" class="form-control contact-form-control" id="name" placeholder="Enter your name">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="contact-form-group">
+                                        <label for="email" class="contact-form-label">Email Address</label>
+                                        <input type="email" class="form-control contact-form-control" id="email" placeholder="Enter your email">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="contact-form-group">
+                                <label for="subject" class="contact-form-label">Subject</label>
+                                <input type="text" class="form-control contact-form-control" id="subject" placeholder="Enter subject">
+                            </div>
+                            <div class="contact-form-group">
+                                <label for="message" class="contact-form-label">Message</label>
+                                <textarea class="form-control contact-form-control" id="message" rows="5" placeholder="Enter your message"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane me-2"></i> Send Message
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FAQ Section -->
+<div class="faq-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="about-title">Frequently Asked Questions</h2>
+            <p class="about-subtitle">Find answers to common questions about PhishGuard</p>
+        </div>
+        
+        <div class="accordion" id="faqAccordion">
+            <div class="faq-item animate-on-scroll">
+                <h2 class="faq-question" id="faqHeadingOne" data-bs-toggle="collapse" data-bs-target="#faqCollapseOne" aria-expanded="true" aria-controls="faqCollapseOne">
+                    How accurate is PhishGuard's phishing detection?
+                    <i class="fas fa-chevron-down"></i>
+                </h2>
+                <div id="faqCollapseOne" class="collapse show" aria-labelledby="faqHeadingOne" data-bs-parent="#faqAccordion">
+                    <div class="faq-answer">
+                        PhishGuard's detection system has an accuracy rate of 98.7%, which is among the highest in the industry. Our machine learning algorithms are continuously trained on new data to improve detection capabilities and adapt to emerging phishing techniques.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="faq-item animate-on-scroll delay-1">
+                <h2 class="faq-question collapsed" id="faqHeadingTwo" data-bs-toggle="collapse" data-bs-target="#faqCollapseTwo" aria-expanded="false" aria-controls="faqCollapseTwo">
+                    Is PhishGuard free to use?
+                    <i class="fas fa-chevron-down"></i>
+                </h2>
+                <div id="faqCollapseTwo" class="collapse" aria-labelledby="faqHeadingTwo" data-bs-parent="#faqAccordion">
+                    <div class="faq-answer">
+                        Yes, PhishGuard offers a free basic plan that includes URL scanning and basic reporting features. We also offer premium plans for individuals and organizations that need advanced features, detailed analytics, and API access.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="faq-item animate-on-scroll delay-2">
+                <h2 class="faq-question collapsed" id="faqHeadingThree" data-bs-toggle="collapse" data-bs-target="#faqCollapseThree" aria-expanded="false" aria-controls="faqCollapseThree">
+                    How does PhishGuard protect my privacy?
+                    <i class="fas fa-chevron-down"></i>
+                </h2>
+                <div id="faqCollapseThree" class="collapse" aria-labelledby="faqHeadingThree" data-bs-parent="#faqAccordion">
+                    <div class="faq-answer">
+                        We take privacy seriously. PhishGuard only collects the data necessary to provide our services and improve our detection algorithms. We never sell user data to third parties, and all scanned URLs are processed securely. You can read our full privacy policy for more details.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="faq-item animate-on-scroll delay-3">
+                <h2 class="faq-question collapsed" id="faqHeadingFour" data-bs-toggle="collapse" data-bs-target="#faqCollapseFour" aria-expanded="false" aria-controls="faqCollapseFour">
+                    Can I integrate PhishGuard with my organization's security systems?
+                    <i class="fas fa-chevron-down"></i>
+                </h2>
+                <div id="faqCollapseFour" class="collapse" aria-labelledby="faqHeadingFour" data-bs-parent="#faqAccordion">
+                    <div class="faq-answer">
+                        Yes, PhishGuard offers API access for enterprise customers, allowing seamless integration with existing security infrastructure. Our team can provide technical support and documentation to help with the integration process.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="faq-item animate-on-scroll delay-4">
+                <h2 class="faq-question collapsed" id="faqHeadingFive" data-bs-toggle="collapse" data-bs-target="#faqCollapseFive" aria-expanded="false" aria-controls="faqCollapseFive">
+                    How can I report a phishing site that wasn't detected?
+                    <i class="fas fa-chevron-down"></i>
+                </h2>
+                <div id="faqCollapseFive" class="collapse" aria-labelledby="faqHeadingFive" data-bs-parent="#faqAccordion">
+                    <div class="faq-answer">
+                        If you encounter a phishing site that wasn't detected by our system, please report it through the "Report Phishing" feature in your dashboard or contact our support team. Your reports help us improve our detection algorithms and protect other users.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize animations for elements with animate-on-scroll class
+        const animateElements = document.querySelectorAll('.animate-on-scroll');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        animateElements.forEach(element => {
+            observer.observe(element);
+        });
+    });
+</script>
+{% endblock %}

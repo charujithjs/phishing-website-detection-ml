@@ -1,0 +1,931 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - PhishGuard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-section {
+        padding: 3rem 0;
+    }
+    
+    .dashboard-header {
+        margin-bottom: 2rem;
+    }
+    
+    .dashboard-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: var(--dark);
+    }
+    
+    .dashboard-subtitle {
+        color: #777;
+    }
+    
+    .stat-card {
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .stat-card-primary {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+    }
+    
+    .stat-card-success {
+        background: linear-gradient(135deg, #2ecc71, #27ae60);
+        color: white;
+    }
+    
+    .stat-card-danger {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        color: white;
+    }
+    
+    .stat-card-warning {
+        background: linear-gradient(135deg, #f39c12, #d35400);
+        color: white;
+    }
+    
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-label {
+        font-size: 1rem;
+        opacity: 0.9;
+    }
+    
+    .stat-icon {
+        font-size: 3rem;
+        opacity: 0.2;
+        position: absolute;
+        right: 1rem;
+        bottom: 1rem;
+    }
+    
+    .dashboard-card {
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        margin-bottom: 1.5rem;
+        border: none;
+        background-color: white;
+    }
+    
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .dashboard-card-header {
+        background-color: var(--dark);
+        color: white;
+        font-weight: 600;
+        padding: 1rem 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    .dashboard-card-body {
+        padding: 1.5rem;
+    }
+    
+    .chart-container {
+        position: relative;
+        height: 300px;
+        margin-bottom: 1rem;
+    }
+    
+    .recent-scans-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    
+    .recent-scans-table th {
+        background-color: var(--dark);
+        color: white;
+        padding: 0.75rem 1rem;
+        text-align: left;
+    }
+    
+    .recent-scans-table td {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .recent-scans-table tr:last-child td {
+        border-bottom: none;
+    }
+    
+    .recent-scans-table tr:nth-child(even) {
+        background-color: rgba(0, 0, 0, 0.02);
+    }
+    
+    .recent-scans-table tr:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+    
+    .status-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 30px;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+    
+    .status-safe {
+        background-color: rgba(46, 204, 113, 0.2);
+        color: #27ae60;
+    }
+    
+    .status-danger {
+        background-color: rgba(231, 76, 60, 0.2);
+        color: #c0392b;
+    }
+    
+    .status-warning {
+        background-color: rgba(243, 156, 18, 0.2);
+        color: #d35400;
+    }
+    
+    .feature-importance-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    
+    .feature-name {
+        flex: 1;
+        font-weight: 500;
+    }
+    
+    .feature-bar-container {
+        flex: 2;
+        height: 8px;
+        background-color: #f1f1f1;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+    
+    .feature-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #3498db, #2980b9);
+        border-radius: 4px;
+    }
+    
+    .feature-value {
+        flex: 0 0 50px;
+        text-align: right;
+        font-weight: 600;
+        color: var(--primary);
+    }
+    
+    .top-phishing-domains {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .phishing-domain-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .phishing-domain-item:last-child {
+        border-bottom: none;
+    }
+    
+    .phishing-domain-name {
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+    }
+    
+    .phishing-domain-name i {
+        color: var(--danger);
+        margin-right: 0.5rem;
+    }
+    
+    .phishing-domain-count {
+        background-color: rgba(231, 76, 60, 0.2);
+        color: #c0392b;
+        padding: 0.25rem 0.75rem;
+        border-radius: 30px;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+    
+    .dashboard-filters {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+    }
+    
+    .filter-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .filter-label {
+        font-weight: 500;
+        color: var(--dark);
+    }
+    
+    .filter-select {
+        border-radius: var(--border-radius);
+        border: 1px solid #e0e0e0;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+    
+    .filter-select:focus {
+        outline: none;
+        box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+        border-color: var(--primary);
+    }
+    
+    @media (max-width: 767.98px) {
+        .dashboard-filters {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .filter-item {
+            width: 100%;
+        }
+        
+        .filter-select {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-section">
+    <div class="container">
+        <!-- Welcome Message for New Users -->
+        {% if is_new_user %}
+        <div class="dashboard-welcome animate-on-scroll">
+            <h2><i class="fas fa-shield-alt me-2"></i> Welcome to PhishGuard!</h2>
+            <p>Thank you for registering with PhishGuard, your trusted partner in phishing detection and online security.</p>
+            <p>From this dashboard, you can monitor your scan statistics, view recent scan history, and access all the features of our phishing detection system.</p>
+            <p>Get started by scanning a URL or exploring our educational resources to learn more about phishing attacks and how to protect yourself.</p>
+            <a href="{{ url_for('scan') }}" class="btn btn-primary mt-3">
+                <i class="fas fa-search me-2"></i> Scan Your First URL
+            </a>
+        </div>
+        {% endif %}
+        
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Dashboard</h1>
+            <p class="dashboard-subtitle">Monitor your phishing detection statistics and recent activity</p>
+        </div>
+        
+        <!-- Dashboard Filters -->
+        <div class="dashboard-filters">
+            <div class="filter-item">
+                <span class="filter-label">Time Period:</span>
+                <select class="filter-select" id="time-period-filter">
+                    <option value="7">Last 7 Days</option>
+                    <option value="30" selected>Last 30 Days</option>
+                    <option value="90">Last 90 Days</option>
+                    <option value="365">Last Year</option>
+                    <option value="all">All Time</option>
+                </select>
+            </div>
+            
+            <div class="filter-item">
+                <span class="filter-label">Category:</span>
+                <select class="filter-select" id="category-filter">
+                    <option value="all" selected>All Categories</option>
+                    <option value="banking">Banking</option>
+                    <option value="social">Social Media</option>
+                    <option value="ecommerce">E-commerce</option>
+                    <option value="email">Email Services</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            
+            <div class="ms-auto">
+                <button class="btn btn-outline-primary" id="refresh-dashboard">
+                    <i class="fas fa-sync-alt me-2"></i> Refresh Data
+                </button>
+            </div>
+        </div>
+        
+        <!-- Stats Cards -->
+        <div class="row">
+            <div class="col-md-3 mb-4">
+                <div class="stat-card stat-card-primary animate-on-scroll">
+                    <div class="stat-value">{{ stats.total_scans }}</div>
+                    <div class="stat-label">Total Scans</div>
+                    <div class="stat-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 mb-4">
+                <div class="stat-card stat-card-success animate-on-scroll delay-1">
+                    <div class="stat-value">{{ stats.safe_urls }}</div>
+                    <div class="stat-label">Safe URLs</div>
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 mb-4">
+                <div class="stat-card stat-card-danger animate-on-scroll delay-2">
+                    <div class="stat-value">{{ stats.phishing_urls }}</div>
+                    <div class="stat-label">Phishing URLs</div>
+                    <div class="stat-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 mb-4">
+                <div class="stat-card stat-card-warning animate-on-scroll delay-3">
+                    <div class="stat-value">{{ stats.suspicious_urls }}</div>
+                    <div class="stat-label">Suspicious URLs</div>
+                    <div class="stat-icon">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Charts Row -->
+        <div class="row">
+            <!-- Detection Results Chart -->
+            <div class="col-lg-6 mb-4">
+                <div class="dashboard-card animate-on-scroll">
+                    <div class="dashboard-card-header">
+                        <span>Phishing Detection Results</span>
+                        <div>
+                            <!-- Removed Download as PNG button -->
+                            <!-- Removed Download as PNG button -->
+                            <!-- <button class="btn btn-sm btn-outline-light" data-bs-toggle="tooltip" data-bs-placement="top" title="Download as PNG">
+                                <i class="fas fa-download"></i>
+                            </button> -->
+                        </div>
+                    </div>
+                    <div class="dashboard-card-body">
+                        <div class="chart-container">
+                            <canvas id="resultsChart"></canvas>
+                        </div>
+                        <div class="text-center text-muted">
+                            <small>Distribution of scan results in the selected time period</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Monthly Scans Chart -->
+            <div class="col-lg-6 mb-4">
+                <div class="dashboard-card animate-on-scroll delay-1">
+                    <div class="dashboard-card-header">
+                        <span>Scan Activity Over Time</span>
+                        <div>
+                            <button class="btn btn-sm btn-outline-light" data-bs-toggle="tooltip" data-bs-placement="top" title="Download as PNG">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="dashboard-card-body">
+                        <div class="chart-container">
+                            <canvas id="scansChart"></canvas>
+                        </div>
+                        <div class="text-center text-muted">
+                            <small>Number of URL scans performed over time</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Second Row -->
+        <div class="row">
+            <!-- Recent Scans -->
+            <div class="col-lg-8 mb-4">
+                <div class="dashboard-card animate-on-scroll">
+                    <div class="dashboard-card-header">
+                        <span>Recent Scans</span>
+                        <div>
+                            <!-- Removed Export to CSV button -->
+                            <!-- <button class="btn btn-sm btn-outline-light" data-bs-toggle="tooltip" data-bs-placement="top" title="Export to CSV">
+                                <i class="fas fa-file-csv"></i>
+                            </button> -->
+                        </div>
+                    </div>
+                    <div class="dashboard-card-body">
+                        <table class="recent-scans-table">
+                            <thead>
+                                <tr>
+                                    <th>URL</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for scan in recent_scans %}
+                                <tr>
+                                    <td title="{{ scan.url }}">{{ scan.url|truncate(30) }}</td>
+                                    <td>{{ scan.date }}</td>
+                                    <td>
+                                        {% if scan.is_phishing %}
+                                        <span class="status-badge status-danger">Phishing</span>
+                                        {% elif scan.is_suspicious %}
+                                        <span class="status-badge status-warning">Suspicious</span>
+                                        {% else %}
+                                        <span class="status-badge status-safe">Safe</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('scan_details', scan_id=scan.id) }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="text-center mt-3">
+                            <a href="{{ url_for('history') }}" class="btn btn-outline-primary">
+                                <i class="fas fa-history me-2"></i> View All Scan History
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature Importance -->
+            <div class="col-lg-4 mb-4">
+                <div class="dashboard-card animate-on-scroll delay-1">
+                    <div class="dashboard-card-header">
+                        <span>Feature Importance</span>
+                        <div>
+                            <button class="btn btn-sm btn-outline-light" data-bs-toggle="tooltip" data-bs-placement="top" title="Learn More">
+                                <i class="fas fa-info-circle"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="dashboard-card-body">
+                        <div class="feature-importance-item">
+                            <div class="feature-name">URL Length</div>
+                            <div class="feature-bar-container">
+                                <div class="feature-bar" style="width: 85%"></div>
+                            </div>
+                            <div class="feature-value">0.85</div>
+                        </div>
+                        <div class="feature-importance-item">
+                            <div class="feature-name">Domain Age</div>
+                            <div class="feature-bar-container">
+                                <div class="feature-bar" style="width: 78%"></div>
+                            </div>
+                            <div class="feature-value">0.78</div>
+                        </div>
+                        <div class="feature-importance-item">
+                            <div class="feature-name">HTTPS</div>
+                            <div class="feature-bar-container">
+                                <div class="feature-bar" style="width: 72%"></div>
+                            </div>
+                            <div class="feature-value">0.72</div>
+                        </div>
+                        <div class="feature-importance-item">
+                            <div class="feature-name">IP Address</div>
+                            <div class="feature-bar-container">
+                                <div class="feature-bar" style="width: 68%"></div>
+                            </div>
+                            <div class="feature-value">0.68</div>
+                        </div>
+                        <div class="feature-importance-item">
+                            <div class="feature-name">Redirects</div>
+                            <div class="feature-bar-container">
+                                <div class="feature-bar" style="width: 65%"></div>
+                            </div>
+                            <div class="feature-value">0.65</div>
+                        </div>
+                        <div class="feature-importance-item">
+                            <div class="feature-name">Prefix/Suffix</div>
+                            <div class="feature-bar-container">
+                                <div class="feature-bar" style="width: 62%"></div>
+                            </div>
+                            <div class="feature-value">0.62</div>
+                        </div>
+                        <div class="feature-importance-item">
+                            <div class="feature-name">TinyURL</div>
+                            <div class="feature-bar-container">
+                                <div class="feature-bar" style="width: 58%"></div>
+                            </div>
+                            <div class="feature-value">0.58</div>
+                        </div>
+                        <div class="text-center mt-3">
+                            <a href="{{ url_for('education') }}#feature-importance" class="btn btn-outline-primary">
+                                <i class="fas fa-chart-bar me-2"></i> Learn More
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Third Row -->
+        <div class="row">
+            <!-- Top Phishing Domains -->
+            <div class="col-lg-6 mb-4">
+                <div class="dashboard-card animate-on-scroll">
+                    <div class="dashboard-card-header">
+                        <span>Top Phishing Domains</span>
+                        <div>
+                            <button class="btn btn-sm btn-outline-light" data-bs-toggle="tooltip" data-bs-placement="top" title="Export to CSV">
+                                <i class="fas fa-file-csv"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="dashboard-card-body">
+                        <ul class="top-phishing-domains">
+                            <li class="phishing-domain-item">
+                                <div class="phishing-domain-name">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    fake-paypal.com
+                                </div>
+                                <div class="phishing-domain-count">128</div>
+                            </li>
+                            <li class="phishing-domain-item">
+                                <div class="phishing-domain-name">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    secure-banking-login.com
+                                </div>
+                                <div class="phishing-domain-count">97</div>
+                            </li>
+                            <li class="phishing-domain-item">
+                                <div class="phishing-domain-name">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    amazon-account-verify.com
+                                </div>
+                                <div class="phishing-domain-count">86</div>
+                            </li>
+                            <li class="phishing-domain-item">
+                                <div class="phishing-domain-name">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    facebook-security-check.com
+                                </div>
+                                <div class="phishing-domain-count">72</div>
+                            </li>
+                            <li class="phishing-domain-item">
+                                <div class="phishing-domain-name">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    netflix-account-update.com
+                                </div>
+                                <div class="phishing-domain-count">65</div>
+                            </li>
+                        </ul>
+                        <div class="text-center mt-3">
+                            <!-- Removed View All Phishing Domains button -->
+                            <!-- <a href="#" class="btn btn-outline-primary">
+                                <i class="fas fa-list me-2"></i> View All Phishing Domains
+                            </a> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature Analysis -->
+            <div class="col-lg-6 mb-4">
+                <div class="dashboard-card animate-on-scroll delay-1">
+                    <div class="dashboard-card-header">
+                        <span>Feature Analysis</span>
+                        <div>
+                            <button class="btn btn-sm btn-outline-light" data-bs-toggle="tooltip" data-bs-placement="top" title="Download as PNG">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="dashboard-card-body">
+                        <div class="chart-container">
+                            <canvas id="featureChart"></canvas>
+                        </div>
+                        <div class="text-center text-muted">
+                            <small>Relative importance of different features in phishing detection</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize tooltips
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+        
+        // Initialize animations for elements with animate-on-scroll class
+        const animateElements = document.querySelectorAll('.animate-on-scroll');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        animateElements.forEach(element => {
+            observer.observe(element);
+        });
+        
+        // Initialize charts
+        initCharts();
+        
+        // Refresh dashboard button
+        const refreshButton = document.getElementById('refresh-dashboard');
+        if (refreshButton) {
+            refreshButton.addEventListener('click', function() {
+                const originalText = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Refreshing...';
+                this.disabled = true;
+                
+                // Simulate refresh delay
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                    this.disabled = false;
+                    
+                    // Show a success message
+                    const alertHtml = `
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fas fa-check-circle me-2"></i> Dashboard data refreshed successfully!
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    `;
+                    
+                    const dashboardHeader = document.querySelector('.dashboard-header');
+                    dashboardHeader.insertAdjacentHTML('afterend', alertHtml);
+                    
+                    // Update charts with new data
+                    updateCharts();
+                }, 1500);
+            });
+        }
+        
+        // Filter change events
+        const timeFilter = document.getElementById('time-period-filter');
+        const categoryFilter = document.getElementById('category-filter');
+        
+        if (timeFilter) {
+            timeFilter.addEventListener('change', function() {
+                updateCharts();
+            });
+        }
+        
+        if (categoryFilter) {
+            categoryFilter.addEventListener('change', function() {
+                updateCharts();
+            });
+        }
+    });
+    
+    function initCharts() {
+        // Phishing Detection Results Chart
+        const resultsChartEl = document.getElementById('resultsChart');
+        if (resultsChartEl) {
+            new Chart(resultsChartEl, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Safe', 'Phishing', 'Suspicious'],
+                    datasets: [{
+                        data: [65, 25, 10],
+                        backgroundColor: ['#2ecc71', '#e74c3c', '#f39c12'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    },
+                    cutout: '70%',
+                    animation: {
+                        animateScale: true,
+                        animateRotate: true
+                    }
+                }
+            });
+        }
+        
+        // Monthly Scans Chart
+        const scansChartEl = document.getElementById('scansChart');
+        if (scansChartEl) {
+            new Chart(scansChartEl, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'Scans',
+                        data: [65, 59, 80, 81, 56, 55, 40, 45, 60, 70, 75, 90],
+                        fill: true,
+                        backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                        borderColor: '#3498db',
+                        tension: 0.4,
+                        pointBackgroundColor: '#3498db',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    animation: {
+                        duration: 2000,
+                        easing: 'easeOutQuart'
+                    }
+                }
+            });
+        }
+        
+        // Feature Importance Chart
+        const featureChartEl = document.getElementById('featureChart');
+        if (featureChartEl) {
+            new Chart(featureChartEl, {
+                type: 'bar',
+                data: {
+                    labels: ['URL Length', 'Domain Age', 'HTTPS', 'IP Address', 'Redirects', 'Prefix/Suffix', 'TinyURL', 'iFrame', 'Mouse Over', 'Right Click'],
+                    datasets: [{
+                        label: 'Feature Importance',
+                        data: [0.85, 0.78, 0.72, 0.68, 0.65, 0.62, 0.58, 0.55, 0.52, 0.48],
+                        backgroundColor: [
+                            'rgba(52, 152, 219, 0.8)',
+                            'rgba(52, 152, 219, 0.75)',
+                            'rgba(52, 152, 219, 0.7)',
+                            'rgba(52, 152, 219, 0.65)',
+                            'rgba(52, 152, 219, 0.6)',
+                            'rgba(52, 152, 219, 0.55)',
+                            'rgba(52, 152, 219, 0.5)',
+                            'rgba(52, 152, 219, 0.45)',
+                            'rgba(52, 152, 219, 0.4)',
+                            'rgba(52, 152, 219, 0.35)'
+                        ],
+                        borderWidth: 0,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 1,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        y: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    animation: {
+                        delay: function(context) {
+                            return context.dataIndex * 100;
+                        },
+                        duration: 1000,
+                        easing: 'easeOutQuart'
+                    }
+                }
+            });
+        }
+    }
+    
+    function updateCharts() {
+        // This function would normally fetch new data based on filters
+        // For demo purposes, we'll just simulate changes
+        
+        // Get the selected time period and category
+        const timePeriod = document.getElementById('time-period-filter').value;
+        const category = document.getElementById('category-filter').value;
+        
+        console.log(`Updating charts with time period: ${timePeriod}, category: ${category}`);
+        
+        // In a real application, you would make an AJAX request to get new data
+        // and then update the charts with the new data
+        
+        // For demo purposes, we'll just update the charts with random data
+        const resultsChart = Chart.getChart('resultsChart');
+        if (resultsChart) {
+            resultsChart.data.datasets[0].data = [
+                Math.floor(Math.random() * 50) + 30, // Safe
+                Math.floor(Math.random() * 30) + 10, // Phishing
+                Math.floor(Math.random() * 20) + 5   // Suspicious
+            ];
+            resultsChart.update();
+        }
+        
+        const scansChart = Chart.getChart('scansChart');
+        if (scansChart) {
+            scansChart.data.datasets[0].data = Array.from({length: 12}, () => Math.floor(Math.random() * 100) + 20);
+            scansChart.update();
+        }
+        
+        const featureChart = Chart.getChart('featureChart');
+        if (featureChart) {
+            featureChart.data.datasets[0].data = [
+                (Math.random() * 0.3 + 0.7).toFixed(2), // URL Length
+                (Math.random() * 0.3 + 0.6).toFixed(2), // Domain Age
+                (Math.random() * 0.3 + 0.5).toFixed(2), // HTTPS
+                (Math.random() * 0.3 + 0.5).toFixed(2), // IP Address
+                (Math.random() * 0.3 + 0.4).toFixed(2), // Redirects
+                (Math.random() * 0.3 + 0.4).toFixed(2), // Prefix/Suffix
+                (Math.random() * 0.3 + 0.3).toFixed(2), // TinyURL
+                (Math.random() * 0.3 + 0.3).toFixed(2), // iFrame
+                (Math.random() * 0.3 + 0.2).toFixed(2), // Mouse Over
+                (Math.random() * 0.3 + 0.2).toFixed(2)  // Right Click
+            ];
+            featureChart.update();
+        }
+        
+        // Update the feature importance bars in the sidebar
+        const featureBars = document.querySelectorAll('.feature-bar');
+        const featureValues = document.querySelectorAll('.feature-value');
+        
+        if (featureBars.length > 0 && featureValues.length > 0) {
+            for (let i = 0; i < featureBars.length; i++) {
+                const value = (Math.random() * 0.3 + 0.5).toFixed(2);
+                featureBars[i].style.width = `${value * 100}%`;
+                featureValues[i].textContent = value;
+            }
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,336 @@
+/* Advanced Hover Effects inspired by hissn.net */
+
+/* ===== BUTTON HOVER EFFECTS ===== */
+
+/* Shine effect */
+.btn-shine {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-shine::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.3) 100%
+    );
+    transform: skewX(-25deg);
+    transition: all 0.75s;
+}
+
+.btn-shine:hover::before {
+    animation: shine 0.75s;
+}
+
+@keyframes shine {
+    100% {
+        left: 125%;
+    }
+}
+
+/* Pulse border */
+.btn-pulse-border {
+    position: relative;
+}
+
+.btn-pulse-border::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: inherit;
+    border: 2px solid rgba(52, 152, 219, 0.6);
+    animation: pulse-border 2s infinite;
+    pointer-events: none;
+}
+
+@keyframes pulse-border {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.2);
+        opacity: 0;
+    }
+}
+
+/* Gradient border */
+.btn-gradient-border {
+    position: relative;
+    z-index: 1;
+    border: none;
+    transition: all 0.4s;
+}
+
+.btn-gradient-border::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: inherit;
+    padding: 2px;
+    background: linear-gradient(90deg, #3498db, #2ecc71);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    z-index: -1;
+}
+
+.btn-gradient-border:hover {
+    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+}
+
+/* ===== CARD HOVER EFFECTS ===== */
+
+/* Reveal content on hover */
+.card-reveal {
+    position: relative;
+    overflow: hidden;
+}
+
+.card-reveal-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(44, 62, 80, 0.9);
+    color: white;
+    padding: 1.5rem;
+    transform: translateY(100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-reveal:hover .card-reveal-content {
+    transform: translateY(0);
+}
+
+/* Zoom image on hover */
+.card-zoom-image {
+    overflow: hidden;
+}
+
+.card-zoom-image img {
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-zoom-image:hover img {
+    transform: scale(1.1);
+}
+
+/* Rotate on hover */
+.rotate-hover {
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.rotate-hover:hover {
+    transform: rotate(5deg);
+}
+
+/* Lift up with shadow */
+.lift-up {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.lift-up:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* ===== TEXT HOVER EFFECTS ===== */
+
+/* Underline from center */
+.underline-center {
+    position: relative;
+    display: inline-block;
+}
+
+.underline-center::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    transform: scaleX(0);
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background: linear-gradient(90deg, #3498db, #2ecc71);
+    transform-origin: center;
+    transition: transform 0.3s ease-out;
+}
+
+.underline-center:hover::after {
+    transform: scaleX(1);
+}
+
+/* Text color change with gradient */
+.text-color-change {
+    transition: color 0.3s ease;
+}
+
+.text-color-change:hover {
+    background: linear-gradient(90deg, #3498db, #2ecc71);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* Letter spacing on hover */
+.letter-spacing-hover {
+    transition: letter-spacing 0.3s ease;
+}
+
+.letter-spacing-hover:hover {
+    letter-spacing: 1px;
+}
+
+/* ===== ICON HOVER EFFECTS ===== */
+
+/* Bounce on hover */
+.icon-bounce {
+    transition: transform 0.3s ease;
+}
+
+.icon-bounce:hover {
+    animation: bounce 0.5s ease infinite alternate;
+}
+
+@keyframes bounce {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-5px);
+    }
+}
+
+/* Spin on hover */
+.icon-spin {
+    transition: transform 0.5s ease;
+}
+
+.icon-spin:hover {
+    transform: rotate(360deg);
+}
+
+/* Pulse on hover */
+.icon-pulse {
+    transition: transform 0.3s ease;
+}
+
+.icon-pulse:hover {
+    animation: pulse 1s ease infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* ===== IMAGE HOVER EFFECTS ===== */
+
+/* Grayscale to color */
+.img-grayscale {
+    filter: grayscale(100%);
+    transition: filter 0.5s ease;
+}
+
+.img-grayscale:hover {
+    filter: grayscale(0%);
+}
+
+/* Blur to clear */
+.img-blur {
+    filter: blur(2px);
+    transition: filter 0.5s ease;
+}
+
+.img-blur:hover {
+    filter: blur(0);
+}
+
+/* Brightness increase */
+.img-brightness {
+    filter: brightness(80%);
+    transition: filter 0.5s ease;
+}
+
+.img-brightness:hover {
+    filter: brightness(110%);
+}
+
+/* ===== NAVIGATION HOVER EFFECTS ===== */
+
+/* Slide in underline */
+.nav-underline {
+    position: relative;
+}
+
+.nav-underline::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background: linear-gradient(90deg, #3498db, #2ecc71);
+    transition: width 0.3s ease;
+}
+
+.nav-underline:hover::after {
+    width: 100%;
+}
+
+/* Background fill */
+.nav-bg-fill {
+    position: relative;
+    z-index: 1;
+    transition: color 0.3s ease;
+}
+
+.nav-bg-fill::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, #3498db, #2ecc71);
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.3s ease;
+}
+
+.nav-bg-fill:hover {
+    color: white !important;
+}
+
+.nav-bg-fill:hover::before {
+    transform: scaleY(1);
+}
+
+/* Scale text */
+.nav-scale {
+    transition: transform 0.3s ease;
+}
+
+.nav-scale:hover {
+    transform: scale(1.1);
+}

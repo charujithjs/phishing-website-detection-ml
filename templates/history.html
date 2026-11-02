@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Scan History - PhishGuard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Scan History</h1>
+    {% if scans %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>URL</th>
+                <th>Domain</th>
+                <th>Scan Date</th>
+                <th>Phishing</th>
+                <th>Suspicious</th>
+                <th>Risk Score</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for scan in scans %}
+            <tr>
+                <td>{{ scan.url }}</td>
+                <td>{{ scan.domain }}</td>
+                <td>{{ scan.scan_date }}</td>
+                <td>{{ 'Yes' if scan.is_phishing else 'No' }}</td>
+                <td>{{ 'Yes' if scan.is_suspicious else 'No' }}</td>
+                <td>{{ scan.risk_score }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No scan history found.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,872 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - PhishGuard{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+    
+    /* Uncomment to hide header and footer
+    .header, .footer {
+        display: none;
+    }
+    */
+    
+    .background-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        overflow: hidden;
+        min-height: 100vh;
+    }
+    
+    .cyber-background {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #0a192f, #112240);
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+    
+    .code-overlay {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        overflow: hidden;
+        opacity: 0.3;
+    }
+    
+    .code-overlay::before {
+        content: "";
+        position: absolute;
+        top: -10px;
+        left: 0;
+        width: 100%;
+        height: calc(100% + 20px);
+        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="500" height="500" viewBox="0 0 500 500"><text x="0" y="15" fill="rgba(0,255,0,0.7)" font-family="monospace" font-size="10px">01001001 01101110 01110100 01110010 01110101 01110011 01101001 01101111 01101110 00100000 01000100 01100101 01110100 01100101 01100011 01110100 01101001 01101111 01101110 00100000 01010011 01111001 01110011 01110100 01100101 01101101 00100000 01000001 01100011 01110100 01101001 01110110 01100101</text><text x="0" y="35" fill="rgba(0,255,0,0.7)" font-family="monospace" font-size="10px">01010011 01100101 01100011 01110101 01110010 01101001 01110100 01111001 00100000 01010000 01110010 01101111 01110100 01101111 01100011 01101111 01101100 00100000 01000101 01101110 01100111 01100001 01100111 01100101 01100100 00100000 01010000 01101000 01101001 01110011 01101000 01000111 01110101 01100001 01110010 01100100</text><text x="0" y="55" fill="rgba(0,255,0,0.7)" font-family="monospace" font-size="10px">function detectPhishing(url) { const risk = analyzeURL(url); return risk > 0.75; }</text><text x="0" y="75" fill="rgba(0,255,0,0.7)" font-family="monospace" font-size="10px">class SecurityScanner { constructor() { this.threats = []; } scan(target) { /* scanning logic */ } }</text><text x="0" y="95" fill="rgba(0,255,0,0.7)" font-family="monospace" font-size="10px">01000001 01110101 01110100 01101000 01100101 01101110 01110100 01101001 01100011 01100001 01110100 01101001 01101111 01101110 00100000 01010010 01100101 01110001 01110101 01101001 01110010 01100101 01100100</text><text x="0" y="115" fill="rgba(0,255,0,0.7)" font-family="monospace" font-size="10px">ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC6vHiXLQTL5xVU8yDzCjbySUADIEw2rN8cMYs4JZO+wVY0hHYBZA5cRxlzT</text><text x="0" y="135" fill="rgba(0,255,0,0.7)" font-family="monospace" font-size="10px">sudo nmap -sS -sV -O -p- 192.168.1.1/24 --script=vuln</text><text x="0" y="155" fill="rgba(0,255,0,0.7)" font-family="monospace" font-size="10px">while(true) { monitor_network_traffic(); detect_anomalies(); alert_if_breach(); }</text><text x="0" y="175" fill="rgba(0,255,0,0.7)" font-family="monospace" font-size="10px">GET /api/v1/security/scan HTTP/1.1 Host: phishguard.com User-Agent: Mozilla/5.0</text><text x="0" y="195" fill="rgba(0,255,0,0.7)" font-family="monospace" font-size="10px">01010000 01101000 01101001 01110011 01101000 01101001 01101110 01100111 00100000 01000100 01100101 01110100 01100101 01100011 01110100 01100101 01100100 00100000 01000001 01101100 01100101 01110010 01110100</text></svg>');
+        background-repeat: repeat-y;
+        animation: scrollCode 60s linear infinite;
+    }
+    
+    .code-overlay::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at center, transparent 0%, #0a192f 90%);
+    }
+    
+    @keyframes scrollCode {
+        0% {
+            background-position: 0 0;
+        }
+        100% {
+            background-position: 0 1000px;
+        }
+    }
+    
+    /* Security icons styling */
+    .security-elements {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 0;
+    }
+    
+    .security-icon {
+        position: absolute;
+        color: rgba(0, 255, 0, 0.15);
+        font-size: 3rem;
+        filter: drop-shadow(0 0 5px rgba(0, 255, 0, 0.5));
+        animation: float 15s ease-in-out infinite, pulse 3s ease-in-out infinite;
+        opacity: 0.5;
+    }
+    
+    .security-icon.lock {
+        top: 15%;
+        left: 10%;
+        animation-delay: 0s;
+    }
+    
+    .security-icon.shield {
+        top: 25%;
+        right: 15%;
+        animation-delay: 2s;
+    }
+    
+    .security-icon.user-shield {
+        bottom: 20%;
+        left: 20%;
+        animation-delay: 4s;
+    }
+    
+    .security-icon.fingerprint {
+        top: 40%;
+        left: 50%;
+        animation-delay: 6s;
+    }
+    
+    .security-icon.key {
+        bottom: 30%;
+        right: 25%;
+        animation-delay: 8s;
+    }
+    
+    .security-icon.server {
+        top: 60%;
+        left: 15%;
+        animation-delay: 10s;
+    }
+    
+    .security-icon.database {
+        top: 10%;
+        left: 70%;
+        animation-delay: 12s;
+    }
+    
+    .security-icon.code {
+        bottom: 15%;
+        right: 10%;
+        animation-delay: 14s;
+    }
+    
+    @keyframes float {
+        0% {
+            transform: translateY(0) rotate(0deg);
+        }
+        50% {
+            transform: translateY(-20px) rotate(5deg);
+        }
+        100% {
+            transform: translateY(0) rotate(0deg);
+        }
+    }
+    
+    @keyframes pulse {
+        0% {
+            opacity: 0.3;
+        }
+        50% {
+            opacity: 0.7;
+        }
+        100% {
+            opacity: 0.3;
+        }
+    }
+    
+    /* Password field styling */
+    .password-field {
+        position: relative;
+    }
+    
+    .password-toggle {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: rgba(255, 255, 255, 0.7);
+        transition: all 0.3s ease;
+        z-index: 10;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        border: none;
+        outline: none;
+        padding: 0;
+        margin: 0;
+        text-align: center;
+    }
+    
+    .password-toggle i {
+        font-size: 14px;
+        line-height: 1;
+    }
+    
+    .password-toggle:hover {
+        color: white;
+    }
+    
+    .form-group input[type="password"],
+    .form-group input[type="text"] {
+        padding-left: 40px; /* Make room for the left icon */
+        padding-right: 40px; /* Make room for the eye icon */
+        width: 100%; /* Use full width */
+        box-sizing: border-box; /* Include padding in width calculation */
+    }
+    
+    /* Fix for password field alignment */
+    .form-group.password-field i.fas.fa-lock {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 5;
+        color: rgba(255, 255, 255, 0.7);
+    }
+    
+    .main-content {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 0;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .login-container {
+        max-width: 900px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 4rem 0;
+        min-height: calc(100vh - 200px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .login-card {
+        background-color: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        -moz-backdrop-filter: blur(10px);
+        -o-backdrop-filter: blur(10px);
+        -ms-backdrop-filter: blur(10px);
+        border-radius: var(--border-radius);
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        overflow: hidden;
+        animation: fadeIn 0.8s ease;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .login-row {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    
+    .login-left {
+        flex: 1;
+        background: rgba(44, 62, 80, 0.5);
+        color: white;
+        padding: 3rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .login-right {
+        flex: 1;
+        padding: 3rem;
+        background: rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+    }
+    
+    .login-logo {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+    
+    .login-logo i {
+        color: var(--primary);
+        filter: drop-shadow(0 0 5px rgba(52, 152, 219, 0.7));
+    }
+    
+    .login-features {
+        margin-top: 2rem;
+    }
+    
+    .login-feature {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        animation: slideInLeft 0.5s ease;
+        background: rgba(0, 0, 0, 0.3);
+        padding: 1rem;
+        border-radius: var(--border-radius);
+        border-left: 3px solid var(--primary);
+        transition: all 0.3s ease;
+    }
+    
+    .login-feature:hover {
+        transform: translateX(5px);
+        background: rgba(0, 0, 0, 0.5);
+    }
+    
+    .login-feature:nth-child(2) {
+        animation-delay: 0.1s;
+    }
+    
+    .login-feature:nth-child(3) {
+        animation-delay: 0.2s;
+    }
+    
+    .login-feature:nth-child(4) {
+        animation-delay: 0.3s;
+    }
+    
+    .login-feature i {
+        color: var(--primary);
+        font-size: 1.5rem;
+        margin-top: 0.25rem;
+        filter: drop-shadow(0 0 5px rgba(52, 152, 219, 0.7));
+    }
+    
+    .login-feature-text h4 {
+        color: white;
+        margin-bottom: 0.5rem;
+        text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    }
+    
+    .login-feature-text p {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+        margin-bottom: 0;
+    }
+    
+    .login-form-title {
+        text-align: center;
+        margin-bottom: 2rem;
+        animation: slideInDown 0.5s ease;
+    }
+    
+    .login-form-title h2 {
+        font-size: 1.75rem;
+        color: white;
+        margin-bottom: 0.5rem;
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+    
+    .login-form-title p {
+        color: rgba(255, 255, 255, 0.7);
+    }
+    
+    .login-form {
+        animation: fadeIn 0.8s ease;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+    
+    .form-group i {
+        position: absolute;
+        top: 50%;
+        left: 1rem;
+        transform: translateY(-50%);
+        color: var(--primary);
+        filter: drop-shadow(0 0 3px rgba(52, 152, 219, 0.7));
+    }
+    
+    .form-control {
+        padding-left: 3rem;
+        background-color: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+    }
+    
+    .form-control:focus {
+        background-color: rgba(255, 255, 255, 0.2);
+        border-color: var(--primary);
+        color: white;
+        box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+    }
+    
+    .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .form-check-label {
+        color: rgba(255, 255, 255, 0.7);
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        border: none;
+        box-shadow: 0 0 15px rgba(52, 152, 219, 0.5);
+        transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 0 20px rgba(52, 152, 219, 0.7);
+    }
+    
+    .login-footer {
+        text-align: center;
+        margin-top: 2rem;
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.6);
+    }
+    
+    .login-footer a {
+        color: var(--primary);
+        font-weight: 500;
+        text-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+    }
+    
+    .login-footer a:hover {
+        text-decoration: underline;
+        color: #3498db;
+    }
+    
+    /* Glowing effect for elements */
+    @keyframes glow {
+        0% { box-shadow: 0 0 5px rgba(52, 152, 219, 0.5); }
+        50% { box-shadow: 0 0 20px rgba(52, 152, 219, 0.8); }
+        100% { box-shadow: 0 0 5px rgba(52, 152, 219, 0.5); }
+    }
+    
+    .glow-effect {
+        animation: glow 3s infinite;
+    }
+    
+    /* Animation classes for scroll effects */
+    .animate-on-scroll {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    
+    .animate-on-scroll.animated {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
+    .delay-1 {
+        transition-delay: 0.2s;
+    }
+    
+    .delay-2 {
+        transition-delay: 0.4s;
+    }
+    
+    .delay-3 {
+        transition-delay: 0.6s;
+    }
+    
+    @media (max-width: 767.98px) {
+        .login-row {
+            flex-direction: column;
+        }
+        
+        .login-left {
+            padding: 2rem;
+            border-right: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .login-right {
+            padding: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="background-container">
+    <div class="cyber-background"></div>
+    <div class="code-overlay"></div>
+    <div class="security-elements">
+        <div class="security-icon lock"><i class="fas fa-lock"></i></div>
+        <div class="security-icon shield"><i class="fas fa-shield-alt"></i></div>
+        <div class="security-icon user-shield"><i class="fas fa-user-shield"></i></div>
+        <div class="security-icon fingerprint"><i class="fas fa-fingerprint"></i></div>
+        <div class="security-icon key"><i class="fas fa-key"></i></div>
+        <div class="security-icon server"><i class="fas fa-server"></i></div>
+        <div class="security-icon database"><i class="fas fa-database"></i></div>
+        <div class="security-icon code"><i class="fas fa-code"></i></div>
+    </div>
+</div>
+
+<div class="login-container">
+    <div class="login-card animate-on-scroll">
+        <div class="login-row">
+            <div class="login-left">
+                <div class="login-logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>PhishGuard</span>
+                </div>
+                <p>Advanced phishing detection system to protect you from online threats.</p>
+                
+                <div class="login-features">
+                    <div class="login-feature">
+                        <i class="fas fa-search"></i>
+                        <div class="login-feature-text">
+                            <h4>URL Analysis</h4>
+                            <p>Check any URL for phishing attempts and malicious content.</p>
+                        </div>
+                    </div>
+                    <div class="login-feature">
+                        <i class="fas fa-graduation-cap"></i>
+                        <div class="login-feature-text">
+                            <h4>Educational Resources</h4>
+                            <p>Learn about phishing techniques and how to stay safe online.</p>
+                        </div>
+                    </div>
+                    <div class="login-feature">
+                        <i class="fas fa-database"></i>
+                        <div class="login-feature-text">
+                            <h4>Extensive Database</h4>
+                            <p>Access to a comprehensive database of known phishing URLs.</p>
+                        </div>
+                    </div>
+                    <div class="login-feature">
+                        <i class="fas fa-shield-alt"></i>
+                        <div class="login-feature-text">
+                            <h4>Security Tips</h4>
+                            <p>Get practical advice to enhance your online security.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="login-right">
+                <div class="login-form-title">
+                    <h2>Welcome to PhishGuard</h2>
+                    <p>Sign in or register to access the phishing detection system</p>
+                </div>
+                
+                <form class="login-form" method="post" action="/login">
+                    <div class="form-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Username" required>
+                    </div>
+                    
+                    <div class="form-group password-field">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                        <span class="password-toggle" onclick="togglePasswordVisibility('password')">
+                            <i class="fas fa-eye"></i>
+                        </span>
+                    </div>
+                    
+                    <div class="form-group form-check">
+                        <input type="checkbox" class="form-check-input" id="rememberMe" name="rememberMe">
+                        <label class="form-check-label" for="rememberMe">Remember me</label>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100 glow-effect">
+                        <i class="fas fa-sign-in-alt me-2"></i> Login
+                    </button>
+                </form>
+                
+                <div class="login-footer">
+                    <p>Don't have an account? <a href="{{ url_for('register') }}">Register</a></p>
+                    <p><a href="#">Forgot password?</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Create matrix-like code rain effect
+        const codeOverlay = document.querySelector('.code-overlay');
+        
+        // Function to create Matrix-like code rain effect
+        function createMatrixEffect(container) {
+            // Create canvas for the matrix effect
+            const canvas = document.createElement('canvas');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            canvas.style.position = 'absolute';
+            canvas.style.top = '0';
+            canvas.style.left = '0';
+            canvas.style.zIndex = '1';
+            container.appendChild(canvas);
+            
+            const ctx = canvas.getContext('2d');
+            
+            // Characters to use (binary, hex, and some code symbols)
+            const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン{}[]()<>/\\|;:+-*=&%$#@!?';
+            
+            // Set up columns
+            const fontSize = 14;
+            const columns = Math.floor(canvas.width / fontSize);
+            
+            // Array to track the y position of each column
+            const drops = [];
+            for (let i = 0; i < columns; i++) {
+                drops[i] = Math.random() * -100;
+            }
+            
+            // Draw the matrix effect
+            function draw() {
+                // Add semi-transparent black rectangle on top of previous frame
+                ctx.fillStyle = 'rgba(10, 25, 47, 0.05)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Set text color and font
+                ctx.fillStyle = '#0f0';
+                ctx.font = fontSize + 'px monospace';
+                
+                // Draw characters
+                for (let i = 0; i < drops.length; i++) {
+                    // Random character
+                    const char = chars[Math.floor(Math.random() * chars.length)];
+                    
+                    // Draw character
+                    ctx.fillText(char, i * fontSize, drops[i] * fontSize);
+                    
+                    // Reset drop position if it's at the bottom or randomly
+                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                        drops[i] = 0;
+                    }
+                    
+                    // Move drop down
+                    drops[i]++;
+                }
+            }
+            
+            // Animation loop
+            setInterval(draw, 35);
+            
+            // Resize canvas when window is resized
+            window.addEventListener('resize', () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                
+                // Reset columns and drops
+                const newColumns = Math.floor(canvas.width / fontSize);
+                
+                // Adjust drops array
+                if (newColumns > drops.length) {
+                    // Add new columns
+                    for (let i = drops.length; i < newColumns; i++) {
+                        drops[i] = Math.random() * -100;
+                    }
+                } else {
+                    // Remove excess columns
+                    drops.length = newColumns;
+                }
+            });
+        }
+        
+        createMatrixEffect(codeOverlay);
+        
+        // Initialize animations for elements with animate-on-scroll class
+        const animateElements = document.querySelectorAll('.animate-on-scroll');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        animateElements.forEach(element => {
+            observer.observe(element);
+        });
+        
+        // Check if backdrop-filter is supported
+        const isBackdropFilterSupported = 'backdropFilter' in document.documentElement.style || 
+                                         'webkitBackdropFilter' in document.documentElement.style ||
+                                         'mozBackdropFilter' in document.documentElement.style;
+        
+        // Apply fallback if not supported
+        if (!isBackdropFilterSupported) {
+            const loginCard = document.querySelector('.login-card');
+            const loginLeft = document.querySelector('.login-left');
+            const loginRight = document.querySelector('.login-right');
+            
+            if (loginCard) loginCard.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
+            if (loginLeft) loginLeft.style.backgroundColor = 'rgba(44, 62, 80, 0.9)';
+            if (loginRight) loginRight.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+        }
+        // Add particle effect to the background
+        const particleCount = 50;
+        const colors = ['#3498db', '#2980b9', '#1abc9c', '#16a085', '#2ecc71', '#27ae60'];
+        const backgroundContainer = document.querySelector('.background-container');
+        
+        // Create particles
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            
+            // Random properties
+            const size = Math.random() * 5 + 2;
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const left = Math.random() * 100;
+            const duration = Math.random() * 20 + 10;
+            const delay = Math.random() * 5;
+            
+            // Apply styles
+            particle.style.cssText = `
+                position: absolute;
+                width: ${size}px;
+                height: ${size}px;
+                background-color: ${color};
+                border-radius: 50%;
+                left: ${left}%;
+                bottom: -10px;
+                opacity: 0.7;
+                box-shadow: 0 0 10px ${color}, 0 0 20px ${color};
+                animation: floatUp ${duration}s ease-in infinite;
+                animation-delay: ${delay}s;
+                z-index: 0;
+            `;
+            
+            backgroundContainer.appendChild(particle);
+        }
+        
+        // Add keyframe animation for particles
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes floatUp {
+                0% {
+                    transform: translateY(0) rotate(0);
+                    opacity: 0.7;
+                }
+                50% {
+                    opacity: 0.5;
+                }
+                100% {
+                    transform: translateY(-100vh) rotate(360deg);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Add animation to form elements
+        const formElements = document.querySelectorAll('.login-form .form-group');
+        formElements.forEach((element, index) => {
+            element.style.opacity = '0';
+            element.style.transform = 'translateY(20px)';
+            element.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            element.style.transitionDelay = `${0.5 + (index * 0.1)}s`;
+            
+            setTimeout(() => {
+                element.style.opacity = '1';
+                element.style.transform = 'translateY(0)';
+            }, 100);
+        });
+        
+        const submitButton = document.querySelector('.login-form button');
+        submitButton.style.opacity = '0';
+        submitButton.style.transform = 'translateY(20px)';
+        submitButton.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        submitButton.style.transitionDelay = '0.8s';
+        
+        setTimeout(() => {
+            submitButton.style.opacity = '1';
+            submitButton.style.transform = 'translateY(0)';
+        }, 100);
+        
+        // Add typing effect to the title
+        const titleElement = document.querySelector('.login-form-title h2');
+        const originalTitle = titleElement.textContent;
+        titleElement.textContent = '';
+        
+        setTimeout(() => {
+            let i = 0;
+            const typingInterval = setInterval(() => {
+                if (i < originalTitle.length) {
+                    titleElement.textContent += originalTitle.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(typingInterval);
+                    // Add blinking cursor effect
+                    const cursor = document.createElement('span');
+                    cursor.className = 'cursor';
+                    cursor.textContent = '|';
+                    cursor.style.cssText = `
+                        animation: blink 1s infinite;
+                        margin-left: 2px;
+                    `;
+                    titleElement.appendChild(cursor);
+                    
+                    // Add cursor blink animation
+                    const cursorStyle = document.createElement('style');
+                    cursorStyle.textContent = `
+                        @keyframes blink {
+                            0%, 100% { opacity: 1; }
+                            50% { opacity: 0; }
+                        }
+                    `;
+                    document.head.appendChild(cursorStyle);
+                }
+            }, 100);
+        }, 1000);
+        
+        // Add interactive hover effect to login features
+        const features = document.querySelectorAll('.login-feature');
+        features.forEach(feature => {
+            feature.addEventListener('mouseenter', () => {
+                feature.style.transform = 'translateX(10px)';
+                feature.style.boxShadow = '0 0 15px rgba(52, 152, 219, 0.7)';
+            });
+            
+            feature.addEventListener('mouseleave', () => {
+                feature.style.transform = 'translateX(0)';
+                feature.style.boxShadow = 'none';
+            });
+        });
+        
+        // Add pulse effect to the logo
+        const logo = document.querySelector('.login-logo i');
+        setInterval(() => {
+            logo.style.transform = 'scale(1.2)';
+            logo.style.filter = 'drop-shadow(0 0 10px rgba(52, 152, 219, 1))';
+            
+            setTimeout(() => {
+                logo.style.transform = 'scale(1)';
+                logo.style.filter = 'drop-shadow(0 0 5px rgba(52, 152, 219, 0.7))';
+            }, 500);
+        }, 3000);
+        
+        // Function to toggle password visibility
+        window.togglePasswordVisibility = function(inputId) {
+            const passwordInput = document.getElementById(inputId);
+            const eyeIcon = event.currentTarget.querySelector('i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            }
+        };
+    });
+</script>
+{% endblock %}

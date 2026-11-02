@@ -1,0 +1,348 @@
+/* Advanced Transitions and Effects inspired by hissn.net */
+
+/* ===== PAGE TRANSITIONS ===== */
+
+/* Page transition container */
+.page-transition {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #2c3e50;
+    z-index: 9999;
+    transform: translateY(100%);
+    transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+.page-transition.active {
+    transform: translateY(0);
+}
+
+.page-transition.exit {
+    transform: translateY(-100%);
+}
+
+/* Page content transition */
+.page-content {
+    opacity: 0;
+    transition: opacity 0.5s ease-out 0.3s;
+}
+
+.page-content.visible {
+    opacity: 1;
+}
+
+/* ===== CURSOR EFFECTS ===== */
+
+/* Custom cursor */
+.custom-cursor {
+    position: fixed;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: rgba(52, 152, 219, 0.5);
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s, background-color 0.3s;
+    mix-blend-mode: difference;
+}
+
+.custom-cursor.hover {
+    width: 50px;
+    height: 50px;
+    background-color: rgba(52, 152, 219, 0.3);
+}
+
+/* Cursor trail effect */
+.cursor-trail {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: rgba(52, 152, 219, 0.3);
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.5s ease;
+}
+
+/* ===== SCROLL EFFECTS ===== */
+
+/* Smooth reveal on scroll */
+.reveal-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.reveal-on-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Parallax effect */
+.parallax {
+    position: relative;
+    overflow: hidden;
+}
+
+.parallax-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 120%;
+    background-size: cover;
+    background-position: center;
+    z-index: -1;
+    will-change: transform;
+}
+
+/* Scroll progress indicator */
+.scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #3498db, #2ecc71);
+    z-index: 1000;
+    transition: width 0.1s ease;
+}
+
+/* ===== HOVER EFFECTS ===== */
+
+/* 3D card effect */
+.card-3d {
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.5s ease;
+}
+
+.card-3d-content {
+    backface-visibility: hidden;
+}
+
+.card-3d-back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    transform: rotateY(180deg);
+}
+
+.card-3d:hover {
+    transform: rotateY(180deg);
+}
+
+/* Magnetic effect */
+.magnetic {
+    position: relative;
+    transition: transform 0.3s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+/* Spotlight effect */
+.spotlight {
+    position: relative;
+    overflow: hidden;
+}
+
+.spotlight::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), 
+                rgba(255, 255, 255, 0.2) 0%, 
+                rgba(255, 255, 255, 0) 50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.spotlight:hover::before {
+    opacity: 1;
+}
+
+/* ===== TEXT EFFECTS ===== */
+
+/* Split text animation */
+.split-text {
+    overflow: hidden;
+}
+
+.split-text span {
+    display: inline-block;
+    transform: translateY(100%);
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.split-text.visible span {
+    transform: translateY(0);
+}
+
+/* Gradient text mask */
+.gradient-mask-text {
+    position: relative;
+    color: transparent;
+    background-clip: text;
+    -webkit-background-clip: text;
+    background-image: linear-gradient(90deg, #3498db, #2ecc71);
+    background-size: 200% 100%;
+    animation: gradientText 3s linear infinite;
+}
+
+/* Glitch text effect */
+.glitch-text {
+    position: relative;
+    color: #fff;
+}
+
+.glitch-text::before,
+.glitch-text::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    color: #fff;
+}
+
+.glitch-text::before {
+    left: 2px;
+    text-shadow: -1px 0 #3498db;
+    clip: rect(44px, 450px, 56px, 0);
+    animation: glitch-anim 5s infinite linear alternate-reverse;
+}
+
+.glitch-text::after {
+    left: -2px;
+    text-shadow: -1px 0 #2ecc71;
+    clip: rect(44px, 450px, 56px, 0);
+    animation: glitch-anim2 5s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim {
+    0% { clip: rect(31px, 9999px, 94px, 0); }
+    5% { clip: rect(70px, 9999px, 71px, 0); }
+    10% { clip: rect(29px, 9999px, 83px, 0); }
+    15% { clip: rect(16px, 9999px, 91px, 0); }
+    20% { clip: rect(2px, 9999px, 3px, 0); }
+    25% { clip: rect(60px, 9999px, 26px, 0); }
+    30% { clip: rect(14px, 9999px, 92px, 0); }
+    35% { clip: rect(31px, 9999px, 88px, 0); }
+    40% { clip: rect(17px, 9999px, 71px, 0); }
+    45% { clip: rect(31px, 9999px, 56px, 0); }
+    50% { clip: rect(71px, 9999px, 83px, 0); }
+    55% { clip: rect(10px, 9999px, 56px, 0); }
+    60% { clip: rect(31px, 9999px, 11px, 0); }
+    65% { clip: rect(75px, 9999px, 25px, 0); }
+    70% { clip: rect(75px, 9999px, 85px, 0); }
+    75% { clip: rect(13px, 9999px, 69px, 0); }
+    80% { clip: rect(99px, 9999px, 54px, 0); }
+    85% { clip: rect(76px, 9999px, 62px, 0); }
+    90% { clip: rect(6px, 9999px, 63px, 0); }
+    95% { clip: rect(46px, 9999px, 33px, 0); }
+    100% { clip: rect(82px, 9999px, 73px, 0); }
+}
+
+@keyframes glitch-anim2 {
+    0% { clip: rect(18px, 9999px, 23px, 0); }
+    5% { clip: rect(93px, 9999px, 37px, 0); }
+    10% { clip: rect(22px, 9999px, 56px, 0); }
+    15% { clip: rect(94px, 9999px, 30px, 0); }
+    20% { clip: rect(59px, 9999px, 71px, 0); }
+    25% { clip: rect(22px, 9999px, 14px, 0); }
+    30% { clip: rect(10px, 9999px, 35px, 0); }
+    35% { clip: rect(78px, 9999px, 85px, 0); }
+    40% { clip: rect(96px, 9999px, 95px, 0); }
+    45% { clip: rect(23px, 9999px, 94px, 0); }
+    50% { clip: rect(80px, 9999px, 55px, 0); }
+    55% { clip: rect(53px, 9999px, 30px, 0); }
+    60% { clip: rect(45px, 9999px, 64px, 0); }
+    65% { clip: rect(65px, 9999px, 16px, 0); }
+    70% { clip: rect(23px, 9999px, 77px, 0); }
+    75% { clip: rect(57px, 9999px, 53px, 0); }
+    80% { clip: rect(39px, 9999px, 48px, 0); }
+    85% { clip: rect(72px, 9999px, 43px, 0); }
+    90% { clip: rect(22px, 9999px, 68px, 0); }
+    95% { clip: rect(30px, 9999px, 95px, 0); }
+    100% { clip: rect(13px, 9999px, 55px, 0); }
+}
+
+/* ===== LOADING EFFECTS ===== */
+
+/* Pulse loading */
+.pulse-loading {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #3498db;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Spinner loading */
+.spinner-loading {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(52, 152, 219, 0.3);
+    border-radius: 50%;
+    border-top-color: #3498db;
+    animation: rotate 1s linear infinite;
+}
+
+/* Dots loading */
+.dots-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.dots-loading span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #3498db;
+    animation: fadeScaleUp 0.6s ease-in-out infinite alternate;
+}
+
+.dots-loading span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.dots-loading span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+/* Progress bar */
+.progress-bar {
+    width: 100%;
+    height: 4px;
+    background-color: rgba(52, 152, 219, 0.2);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3498db, #2ecc71);
+    width: 0;
+    transition: width 0.3s ease;
+}
+
+/* ===== MEDIA QUERIES ===== */
+
+@media (max-width: 768px) {
+    .custom-cursor,
+    .cursor-trail {
+        display: none;
+    }
+}

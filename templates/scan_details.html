@@ -1,0 +1,315 @@
+{% extends 'base.html' %}
+
+{% block title %}Scan Details - PhishGuard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .details-section {
+        padding: 3rem 0;
+    }
+    
+    .details-card {
+        background-color: white;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        border: none;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        animation: fadeIn 0.8s ease-out;
+    }
+    
+    .details-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    
+    .details-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--dark);
+        margin: 0;
+    }
+    
+    .details-date {
+        font-size: 0.9rem;
+        color: var(--secondary);
+    }
+    
+    .result-card {
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        animation: fadeIn 0.8s ease-out;
+        overflow: hidden;
+        word-wrap: break-word;
+        word-break: break-word;
+    }
+    
+    .result-safe {
+        background: linear-gradient(135deg, #d4f1dd, #c8e6c9);
+        border-left: 5px solid var(--success);
+    }
+    
+    .result-danger {
+        background: linear-gradient(135deg, #f5b7b1, #f1948a);
+        border-left: 5px solid var(--danger);
+    }
+    
+    .result-warning {
+        background: linear-gradient(135deg, #fdebd0, #fad7a0);
+        border-left: 5px solid var(--warning);
+    }
+    
+    .result-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .result-details {
+        margin-top: 1rem;
+    }
+    
+    .result-detail-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .result-detail-item span:first-child {
+        font-weight: 600;
+        min-width: 100px;
+    }
+    
+    .result-detail-item span:last-child {
+        word-break: break-word;
+        word-wrap: break-word;
+        max-width: 100%;
+        text-align: right;
+    }
+    
+    .result-detail-item:last-child {
+        border-bottom: none;
+    }
+    
+    .feature-table {
+        width: 100%;
+        margin-top: 1.5rem;
+        border-collapse: separate;
+        border-spacing: 0;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        table-layout: fixed;
+    }
+    
+    .feature-table th {
+        background-color: var(--dark);
+        color: white;
+        padding: 0.75rem 1rem;
+        text-align: left;
+    }
+    
+    .feature-table td {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid #e0e0e0;
+        word-wrap: break-word;
+        word-break: break-word;
+        max-width: 300px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .feature-table tr:last-child td {
+        border-bottom: none;
+    }
+    
+    .feature-table tr:nth-child(even) {
+        background-color: rgba(0, 0, 0, 0.02);
+    }
+    
+    .feature-table tr:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+    
+    .feature-indicator {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .indicator-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+    }
+    
+    .indicator-dot-safe {
+        background-color: var(--success);
+    }
+    
+    .indicator-dot-warning {
+        background-color: var(--warning);
+    }
+    
+    .indicator-dot-danger {
+        background-color: var(--danger);
+    }
+    
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        max-width: 100%;
+    }
+    
+    .actions-container {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+        flex-wrap: wrap;
+    }
+    
+    @media (max-width: 767.98px) {
+        .details-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="details-section">
+    <div class="container">
+        <div class="details-card">
+            <div class="details-header">
+                <div>
+                    <h2 class="details-title">Scan Details</h2>
+                    <p class="details-date">{{ scan.scan_date }}</p>
+                </div>
+                <a href="{{ url_for('history') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i> Back to History
+                </a>
+            </div>
+            
+            <div class="result-card {% if scan.is_phishing %}result-danger{% elif scan.is_suspicious %}result-warning{% else %}result-safe{% endif %}">
+                <h3 class="result-title">
+                    {% if scan.is_phishing %}
+                    <i class="fas fa-exclamation-triangle"></i> Phishing Detected
+                    {% elif scan.is_suspicious %}
+                    <i class="fas fa-exclamation-circle"></i> Suspicious URL
+                    {% else %}
+                    <i class="fas fa-check-circle"></i> Safe URL
+                    {% endif %}
+                </h3>
+                
+                <p>
+                    {% if scan.is_phishing %}
+                    This URL has been identified as a phishing attempt. We strongly recommend not visiting this website.
+                    {% elif scan.is_suspicious %}
+                    This URL shows some suspicious characteristics. Proceed with caution if you choose to visit this website.
+                    {% else %}
+                    This URL appears to be safe based on our analysis. However, always remain vigilant online.
+                    {% endif %}
+                </p>
+                
+                <div class="result-details">
+                    <div class="result-detail-item">
+                        <span>URL</span>
+                        <span>{{ scan.url }}</span>
+                    </div>
+                    <div class="result-detail-item">
+                        <span>Domain</span>
+                        <span>{{ scan.domain }}</span>
+                    </div>
+                    <div class="result-detail-item">
+                        <span>Scan Date</span>
+                        <span>{{ scan.scan_date }}</span>
+                    </div>
+                    <div class="result-detail-item">
+                        <span>Risk Score</span>
+                        <span>{{ scan.risk_score }}/10</span>
+                    </div>
+                </div>
+            </div>
+            
+            <h4 class="mb-3 mt-4">Feature Analysis</h4>
+            <div class="table-responsive">
+                <table class="feature-table">
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>Value</th>
+                            <th>Risk Level</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for feature_name, feature_data in scan.features.items() %}
+                        <tr>
+                            <td>{{ feature_name|replace('_', ' ')|title }}</td>
+                            <td>{{ feature_data.value }}</td>
+                            <td>
+                                <div class="feature-indicator">
+                                    <div class="indicator-dot {% if feature_data.risk == 'high' %}indicator-dot-danger{% elif feature_data.risk == 'medium' %}indicator-dot-warning{% else %}indicator-dot-safe{% endif %}"></div>
+                                    {{ feature_data.risk|capitalize }}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="actions-container">
+                <a href="{{ url_for('scan') }}" class="btn btn-primary">
+                    <i class="fas fa-search me-2"></i> Scan Another URL
+                </a>
+                <button class="btn btn-outline-secondary copy-btn" data-copy="{{ scan.url }}">
+                    <i class="fas fa-copy me-2"></i> Copy URL
+                </button>
+                {% if scan.is_phishing %}
+                <a href="#" class="btn btn-danger">
+                    <i class="fas fa-flag me-2"></i> Report Phishing
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Copy URL functionality
+        const copyButtons = document.querySelectorAll('.copy-btn');
+        copyButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const textToCopy = this.getAttribute('data-copy');
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    // Change button text temporarily
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '<i class="fas fa-check me-2"></i> Copied!';
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                    }, 2000);
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}

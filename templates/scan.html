@@ -1,0 +1,830 @@
+{% extends 'base.html' %}
+
+{% block title %}Scan URL - PhishGuard{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Responsive table styles */
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        max-width: 100%;
+    }
+    
+    .scan-section {
+        padding: 3rem 0;
+    }
+    
+    .scan-card {
+        background-color: white;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        border: none;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        animation: fadeIn 0.8s ease-out;
+    }
+    
+    .scan-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .scan-title {
+        font-size: 1.75rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: var(--dark);
+        text-align: center;
+    }
+    
+    .scan-input-group {
+        display: flex;
+        margin-bottom: 1rem;
+    }
+    
+    .scan-input {
+        flex: 1;
+        border-radius: var(--border-radius) 0 0 var(--border-radius);
+        border: 1px solid #e0e0e0;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .scan-input:focus {
+        outline: none;
+        box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+        border-color: var(--primary);
+    }
+    
+    .scan-button {
+        border-radius: 0 var(--border-radius) var(--border-radius) 0;
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        border: none;
+        padding: 0 1.5rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .scan-button:hover {
+        background: linear-gradient(135deg, #2980b9, #3498db);
+    }
+    
+    .result-card {
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        animation: fadeIn 0.8s ease-out;
+        overflow: hidden;
+        word-wrap: break-word;
+        word-break: break-word;
+    }
+    
+    .result-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .result-safe {
+        background: linear-gradient(135deg, #d4f1dd, #c8e6c9);
+        border-left: 5px solid var(--success);
+    }
+    
+    .result-danger {
+        background: linear-gradient(135deg, #f5b7b1, #f1948a);
+        border-left: 5px solid var(--danger);
+    }
+    
+    .result-warning {
+        background: linear-gradient(135deg, #fdebd0, #fad7a0);
+        border-left: 5px solid var(--warning);
+    }
+    
+    .result-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .result-details {
+        margin-top: 1rem;
+    }
+    
+    .result-detail-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .result-detail-item span:first-child {
+        font-weight: 600;
+        min-width: 100px;
+    }
+    
+    .result-detail-item span:last-child {
+        word-break: break-word;
+        word-wrap: break-word;
+        max-width: 100%;
+        text-align: right;
+    }
+    
+    .result-detail-item:last-child {
+        border-bottom: none;
+    }
+    
+    .feature-indicator {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .indicator-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+    }
+    
+    .indicator-dot-safe {
+        background-color: var(--success);
+    }
+    
+    .indicator-dot-warning {
+        background-color: var(--warning);
+    }
+    
+    .indicator-dot-danger {
+        background-color: var(--danger);
+    }
+    
+    .feature-table {
+        width: 100%;
+        margin-top: 1.5rem;
+        border-collapse: separate;
+        border-spacing: 0;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        table-layout: fixed;
+    }
+    
+    .feature-table th {
+        background-color: var(--dark);
+        color: white;
+        padding: 0.75rem 1rem;
+        text-align: left;
+    }
+    
+    .feature-table td {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid #e0e0e0;
+        word-wrap: break-word;
+        word-break: break-word;
+        max-width: 300px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .feature-table tr:last-child td {
+        border-bottom: none;
+    }
+    
+    .feature-table tr:nth-child(even) {
+        background-color: rgba(0, 0, 0, 0.02);
+    }
+    
+    .feature-table tr:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+    
+    .scan-history {
+        margin-top: 3rem;
+    }
+    
+    .scan-history-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: var(--dark);
+    }
+    
+    .history-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    
+    .history-table th {
+        background-color: var(--dark);
+        color: white;
+        padding: 0.75rem 1rem;
+        text-align: left;
+    }
+    
+    .history-table td {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .history-table tr:last-child td {
+        border-bottom: none;
+    }
+    
+    .history-table tr:nth-child(even) {
+        background-color: rgba(0, 0, 0, 0.02);
+    }
+    
+    .history-table tr:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+    
+    .status-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 30px;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+    
+    .status-safe {
+        background-color: rgba(46, 204, 113, 0.2);
+        color: #27ae60;
+    }
+    
+    .status-danger {
+        background-color: rgba(231, 76, 60, 0.2);
+        color: #c0392b;
+    }
+    
+    .status-warning {
+        background-color: rgba(243, 156, 18, 0.2);
+        color: #d35400;
+    }
+    
+    .loading-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 3rem;
+        text-align: center;
+    }
+    
+    .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid rgba(52, 152, 219, 0.2);
+        border-radius: 50%;
+        border-top-color: var(--primary);
+        animation: spin 1s ease-in-out infinite;
+        margin-bottom: 1.5rem;
+    }
+    
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    
+    .loading-container {
+    transition: opacity 0.3s ease;
+}
+
+.loading-spinner.paused {
+    animation-play-state: paused;
+    border-top-color: var(--success);
+
+}
+    .loading-text {
+        font-size: 1.25rem;
+        font-weight: 500;
+        color: var(--dark);
+        margin-bottom: 0.5rem;
+    }
+    
+    .loading-subtext {
+        color: #777;
+    }
+    
+    .scan-tips {
+        margin-top: 3rem;
+    }
+    
+    .tips-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: var(--dark);
+    }
+    
+    .tips-card {
+        background-color: white;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        border: none;
+        padding: 1.5rem;
+    }
+    
+    .tips-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .tip-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .tip-item:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+    }
+    
+    .tip-icon {
+        font-size: 1.5rem;
+        color: var(--primary);
+    }
+    
+    .tip-content h4 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--dark);
+    }
+    
+    @media (max-width: 767.98px) {
+        .scan-input-group {
+            flex-direction: column;
+        }
+        
+        .scan-input {
+            border-radius: var(--border-radius);
+            margin-bottom: 0.5rem;
+        }
+        
+        .scan-button {
+            border-radius: var(--border-radius);
+            width: 100%;
+            padding: 0.75rem;
+        }
+        
+        .result-detail-item {
+            flex-direction: column;
+        }
+        
+        .result-detail-item span:first-child {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="scan-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <!-- Scan Form Card -->
+                <div class="scan-card">
+                    <h2 class="scan-title">
+                        <i class="fas fa-search me-2"></i> Scan URL for Phishing
+                    </h2>
+                    <form action="{{ url_for('scan') }}" method="post" id="url-scan-form">
+                        <div class="scan-input-group">
+                            <input type="url" class="scan-input" id="url-input" name="url" placeholder="Enter a URL to check (e.g., https://example.com)" required>
+                            <button type="submit" class="scan-button">
+                                <i class="fas fa-search me-2"></i> Scan Now
+                            </button>
+                        </div>
+                        <div class="invalid-feedback" id="url-feedback"></div>
+                        <p class="text-muted text-center mt-2">
+                            <i class="fas fa-shield-alt me-1"></i> 
+                            We'll analyze this URL for phishing indicators and provide instant results.
+                        </p>
+                    </form>
+                </div>
+                
+                <!-- Scan Results (Show only if there are results) -->
+                {% if result %}
+                <div class="result-card {% if result.is_phishing %}result-danger{% elif result.is_suspicious %}result-warning{% else %}result-safe{% endif %}">
+                    <h3 class="result-title">
+                        {% if result.is_phishing %}
+                        <i class="fas fa-exclamation-triangle"></i> Phishing Detected
+                        {% elif result.is_suspicious %}
+                        <i class="fas fa-exclamation-circle"></i> Suspicious URL
+                        {% else %}
+                        <i class="fas fa-check-circle"></i> Safe URL
+                        {% endif %}
+                    </h3>
+                    
+                    <p>
+                        {% if result.is_phishing %}
+                        This URL has been identified as a phishing attempt. We strongly recommend not visiting this website.
+                        {% elif result.is_suspicious %}
+                        This URL shows some suspicious characteristics. Proceed with caution if you choose to visit this website.
+                        {% else %}
+                        This URL appears to be safe based on our analysis. However, always remain vigilant online.
+                        {% endif %}
+                    </p>
+                    
+                    <div class="result-details">
+                        <div class="result-detail-item">
+                            <span>URL</span>
+                            <span>{{ result.url }}</span>
+                        </div>
+                        <div class="result-detail-item">
+                            <span>Domain</span>
+                            <span>{{ result.domain }}</span>
+                        </div>
+                        <div class="result-detail-item">
+                            <span>Scan Date</span>
+                            <span>{{ result.scan_date }}</span>
+                        </div>
+                        <div class="result-detail-item">
+                            <span>Risk Score</span>
+                            <span>{{ result.risk_score }}/10</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <button class="btn btn-sm btn-outline-dark" type="button" data-bs-toggle="collapse" data-bs-target="#detailedResults" aria-expanded="false" aria-controls="detailedResults">
+                            <i class="fas fa-chart-bar me-1"></i> View Detailed Analysis
+                        </button>
+                        
+                        {% if session.authenticated %}
+                        <button class="btn btn-sm btn-outline-primary ms-2">
+                            <i class="fas fa-save me-1"></i> Save to History
+                        </button>
+                        {% endif %}
+                        
+                        <button class="btn btn-sm btn-outline-secondary ms-2 copy-btn" data-copy="{{ result.url }}">
+                            <i class="fas fa-copy me-1"></i> Copy URL
+                        </button>
+                    </div>
+                    
+                    <div class="collapse mt-4" id="detailedResults">
+                        <h4 class="mb-3">Phishing Indicators</h4>
+                        {% if result.phishing_indicators and result.phishing_indicators|length > 0 %}
+                        <div class="table-responsive">
+                            <table class="feature-table">
+                                <thead>
+                                    <tr>
+                                        <th>Feature</th>
+                                        <th>Value</th>
+                                        <th>Importance</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for indicator in result.phishing_indicators %}
+                                    <tr>
+                                        <td>{{ indicator.feature|replace('_', ' ')|title }}</td>
+                                        <td>{{ indicator.value }}</td>
+                                        <td>
+                                            <div class="feature-indicator">
+                                                <div class="indicator-dot {% if indicator.importance > 5 %}indicator-dot-danger{% elif indicator.importance > 2 %}indicator-dot-warning{% else %}indicator-dot-safe{% endif %}"></div>
+                                                {{ indicator.importance }}%
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <p>No significant phishing indicators were found for this URL.</p>
+                        {% endif %}
+                        
+                        <h4 class="mb-3 mt-4">Feature Analysis</h4>
+                        <div class="table-responsive">
+                            <table class="feature-table">
+                        
+                        <h4 class="mb-3 mt-4">Feature Analysis</h4>
+                        <table class="feature-table">
+                            <thead>
+                                <tr>
+                                    <th>Feature</th>
+                                    <th>Value</th>
+                                    <th>Risk Level</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>URL Length</td>
+                                    <td>{{ result.features.url_length }}</td>
+                                    <td>
+                                        <div class="feature-indicator">
+                                            <div class="indicator-dot {% if result.features.url_length_risk == 'high' %}indicator-dot-danger{% elif result.features.url_length_risk == 'medium' %}indicator-dot-warning{% else %}indicator-dot-safe{% endif %}"></div>
+                                            {{ result.features.url_length_risk|capitalize }}
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Contains IP Address</td>
+                                    <td>{{ result.features.has_ip }}</td>
+                                    <td>
+                                        <div class="feature-indicator">
+                                            <div class="indicator-dot {% if result.features.has_ip %}indicator-dot-danger{% else %}indicator-dot-safe{% endif %}"></div>
+                                            {% if result.features.has_ip %}High{% else %}Low{% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Domain Age</td>
+                                    <td>{{ result.features.domain_age }}</td>
+                                    <td>
+                                        <div class="feature-indicator">
+                                            <div class="indicator-dot {% if result.features.domain_age_risk == 'high' %}indicator-dot-danger{% elif result.features.domain_age_risk == 'medium' %}indicator-dot-warning{% else %}indicator-dot-safe{% endif %}"></div>
+                                            {{ result.features.domain_age_risk|capitalize }}
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>HTTPS</td>
+                                    <td>{{ result.features.has_https }}</td>
+                                    <td>
+                                        <div class="feature-indicator">
+                                            <div class="indicator-dot {% if not result.features.has_https %}indicator-dot-danger{% else %}indicator-dot-safe{% endif %}"></div>
+                                            {% if not result.features.has_https %}High{% else %}Low{% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Redirects</td>
+                                    <td>{{ result.features.redirect_count }}</td>
+                                    <td>
+                                        <div class="feature-indicator">
+                                            <div class="indicator-dot {% if result.features.redirect_risk == 'high' %}indicator-dot-danger{% elif result.features.redirect_risk == 'medium' %}indicator-dot-warning{% else %}indicator-dot-safe{% endif %}"></div>
+                                            {{ result.features.redirect_risk|capitalize }}
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Prefix/Suffix</td>
+                                    <td>{{ result.features.has_prefix_suffix }}</td>
+                                    <td>
+                                        <div class="feature-indicator">
+                                            <div class="indicator-dot {% if result.features.has_prefix_suffix %}indicator-dot-danger{% else %}indicator-dot-safe{% endif %}"></div>
+                                            {% if result.features.has_prefix_suffix %}High{% else %}Low{% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>TinyURL</td>
+                                    <td>{{ result.features.is_shortened }}</td>
+                                    <td>
+                                        <div class="feature-indicator">
+                                            <div class="indicator-dot {% if result.features.is_shortened %}indicator-dot-warning{% else %}indicator-dot-safe{% endif %}"></div>
+                                            {% if result.features.is_shortened %}Medium{% else %}Low{% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Loading State (Show only when scanning) -->
+                {% if is_scanning %}
+                <div class="loading-container" id="loadingContainer">
+                    <div class="loading-spinner" id="loadingSpinner"></div>
+                    <div class="loading-text">Analyzing URL...</div>
+                    <div class="loading-subtext">This may take a few seconds</div>
+                </div>
+                {% endif %}
+                
+                <!-- Scan Tips -->
+                <div class="scan-tips">
+                    <h3 class="tips-title">Tips for Identifying Phishing URLs</h3>
+                    <div class="tips-card">
+                        <div class="tip-item">
+                            <div class="tip-icon">
+                                <i class="fas fa-spell-check"></i>
+                            </div>
+                            <div class="tip-content">
+                                <h4>Check for Spelling Errors</h4>
+                                <p>Phishing URLs often contain misspellings or slight variations of legitimate domain names (e.g., "amaz0n.com" instead of "amazon.com").</p>
+                            </div>
+                        </div>
+                        <div class="tip-item">
+                            <div class="tip-icon">
+                                <i class="fas fa-lock"></i>
+                            </div>
+                            <div class="tip-content">
+                                <h4>Look for HTTPS</h4>
+                                <p>Legitimate websites typically use HTTPS encryption. While some phishing sites also use HTTPS, the absence of it is a red flag.</p>
+                            </div>
+                        </div>
+                        <div class="tip-item">
+                            <div class="tip-icon">
+                                <i class="fas fa-link"></i>
+                            </div>
+                            <div class="tip-content">
+                                <h4>Beware of Shortened URLs</h4>
+                                <p>URL shorteners (like bit.ly or tinyurl.com) can hide the actual destination. Always hover over links to see where they lead.</p>
+                            </div>
+                        </div>
+                        <div class="tip-item">
+                            <div class="tip-icon">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="tip-content">
+                                <h4>Be Suspicious of Urgency</h4>
+                                <p>Phishing attempts often create a false sense of urgency to make you act quickly without thinking.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Scans (Show only for authenticated users) -->
+                {% if session.authenticated and recent_scans %}
+                <div class="scan-history">
+                    <h3 class="scan-history-title">Your Recent Scans</h3>
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>URL</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for scan in recent_scans %}
+                            <tr>
+                                <td title="{{ scan.url }}">{{ scan.url|truncate(30) }}</td>
+                                <td>{{ scan.date }}</td>
+                                <td>
+                                    {% if scan.is_phishing %}
+                                    <span class="status-badge status-danger">Phishing</span>
+                                    {% elif scan.is_suspicious %}
+                                    <span class="status-badge status-warning">Suspicious</span>
+                                    {% else %}
+                                    <span class="status-badge status-safe">Safe</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('scan_details', scan_id=scan.id) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="text-center mt-3">
+                        <a href="{{ url_for('history') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-history me-2"></i> View All Scan History
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // URL validation for the scan form
+        const urlForm = document.getElementById('url-scan-form');
+        const urlInput = document.getElementById('url-input');
+        const urlFeedback = document.getElementById('url-feedback');
+        
+        if (urlForm && urlInput) {
+            urlForm.addEventListener('submit', function(e) {
+                if (!isValidUrl(urlInput.value)) {
+                    e.preventDefault();
+                    urlInput.classList.add('is-invalid');
+                    if (urlFeedback) {
+                        urlFeedback.textContent = 'Please enter a valid URL (e.g., https://example.com)';
+                    }
+                } else {
+                    urlInput.classList.remove('is-invalid');
+                    urlInput.classList.add('is-valid');
+                    
+                    // Show loading state
+                    const resultContainer = document.querySelector('.result-card');
+                    if (resultContainer) {
+                        resultContainer.style.display = 'none';
+                    }
+                    
+                    const loadingContainer = document.createElement('div');
+                    loadingContainer.className = 'loading-container';
+                    loadingContainer.id = 'dynamicLoadingContainer';
+                    loadingContainer.innerHTML = `
+                        <div class="loading-spinner" id="dynamicLoadingSpinner"></div>
+                        <div class="loading-text">Analyzing URL...</div>
+                        <div class="loading-subtext">This may take a few seconds</div>
+                    `;
+                    
+                    urlForm.parentNode.appendChild(loadingContainer);
+                }
+            });
+            
+            urlInput.addEventListener('input', function() {
+                if (urlInput.classList.contains('is-invalid')) {
+                    if (isValidUrl(urlInput.value)) {
+                        urlInput.classList.remove('is-invalid');
+                        urlInput.classList.add('is-valid');
+                        if (urlFeedback) {
+                            urlFeedback.textContent = '';
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Copy to clipboard functionality
+        const copyButtons = document.querySelectorAll('.copy-btn');
+        
+        copyButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const textToCopy = this.getAttribute('data-copy');
+                const originalText = this.innerHTML;
+                
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    this.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Could not copy text: ', err);
+                });
+            });
+        });
+        
+        // Function to stop loading animation when results appear
+        function checkForResults() {
+            const resultCard = document.querySelector('.result-card');
+            const loadingContainer = document.getElementById('loadingContainer') || 
+                                   document.getElementById('dynamicLoadingContainer');
+            
+            if (resultCard && loadingContainer) {
+                // Pause the spinner animation
+                const spinner = document.getElementById('loadingSpinner') || 
+                                document.getElementById('dynamicLoadingSpinner');
+                if (spinner) {
+                    spinner.classList.add('paused');
+                }
+                
+                // Update text
+                const loadingText = loadingContainer.querySelector('.loading-text');
+                const loadingSubtext = loadingContainer.querySelector('.loading-subtext');
+                
+                if (loadingText) loadingText.textContent = 'Analysis Complete!';
+                if (loadingSubtext) loadingSubtext.textContent = 'Results are ready';
+                
+                // Hide after delay
+                setTimeout(() => {
+                    loadingContainer.style.opacity = '0';
+                    setTimeout(() => {
+                        loadingContainer.style.display = 'none';
+                    }, 300);
+                }, 1500);
+            } else if (!resultCard && loadingContainer) {
+                // If no results yet, check again
+                setTimeout(checkForResults, 500);
+            }
+        }
+        
+        // Start checking for results
+        if (document.querySelector('.loading-container')) {
+            setTimeout(checkForResults, 500);
+        }
+        
+        function isValidUrl(url) {
+            try {
+                new URL(url);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+    });
+</script>
+{% endblock %}

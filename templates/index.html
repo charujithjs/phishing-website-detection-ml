@@ -1,0 +1,747 @@
+{% extends 'base.html' %}
+
+{% block title %}PhishGuard - Protect Yourself from Phishing Attacks{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #2c3e50, #1a252f);
+        color: white;
+        padding: 5rem 0;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url("{{ url_for('static', filename='img/cyber-pattern.png') }}");
+        opacity: 0.1;
+        z-index: 0;
+    }
+    
+    .hero-content {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .hero-title {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        animation: slideInFromLeft 0.5s ease-out;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.25rem;
+        margin-bottom: 2rem;
+        opacity: 0.9;
+        animation: slideInFromLeft 0.7s ease-out;
+    }
+    
+    .hero-buttons {
+        animation: slideInFromLeft 0.9s ease-out;
+    }
+    
+    .hero-image {
+        animation: slideInFromRight 0.7s ease-out;
+    }
+    
+    .feature-section {
+        padding: 5rem 0;
+    }
+    
+    .section-title {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    
+    .section-title h2 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: var(--dark);
+    }
+    
+    .section-title p {
+        font-size: 1.1rem;
+        color: #777;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    
+    .feature-card {
+        background-color: white;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        margin-bottom: 1.5rem;
+        border: none;
+        height: 100%;
+        padding: 2rem;
+        text-align: center;
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 1.5rem;
+        color: var(--primary);
+        transition: all 0.3s ease;
+    }
+    
+    .feature-card:hover .feature-icon {
+        transform: scale(1.2);
+        color: #2980b9;
+    }
+    
+    .feature-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--dark);
+    }
+    
+    .stats-section {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        padding: 5rem 0;
+        position: relative;
+    }
+    
+    .stats-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url("{{ url_for('static', filename='img/cyber-pattern.png') }}");
+        opacity: 0.1;
+        z-index: 0;
+    }
+    
+    .stats-content {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .stat-card {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: var(--border-radius);
+        padding: 2rem;
+        text-align: center;
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .stat-value {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+    
+    .stat-label {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+    
+    .how-it-works-section {
+        padding: 5rem 0;
+        background-color: #f8f9fa;
+    }
+    
+    .step-card {
+        background-color: white;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        margin-bottom: 1.5rem;
+        border: none;
+        height: 100%;
+        padding: 2rem;
+    }
+    
+    .step-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .step-number {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 50px;
+        height: 50px;
+        background-color: var(--primary);
+        color: white;
+        font-size: 1.5rem;
+        font-weight: 700;
+        border-radius: 50%;
+        margin-bottom: 1.5rem;
+    }
+    
+    .step-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--dark);
+    }
+    
+    .testimonial-section {
+        padding: 5rem 0;
+    }
+    
+    .testimonial-card {
+        background-color: white;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        margin-bottom: 1.5rem;
+        border: none;
+        height: 100%;
+        padding: 2rem;
+    }
+    
+    .testimonial-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .testimonial-content {
+        font-size: 1.1rem;
+        font-style: italic;
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+    
+    .testimonial-content::before {
+        content: '"';
+        font-size: 4rem;
+        position: absolute;
+        top: -20px;
+        left: -10px;
+        color: rgba(52, 152, 219, 0.1);
+        font-family: Georgia, serif;
+    }
+    
+    .testimonial-author {
+        display: flex;
+        align-items: center;
+    }
+    
+    .testimonial-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 1rem;
+    }
+    
+    .testimonial-name {
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+    
+    .testimonial-position {
+        font-size: 0.9rem;
+        color: #777;
+    }
+    
+    .cta-section {
+        background: linear-gradient(135deg, #2c3e50, #1a252f);
+        color: white;
+        padding: 5rem 0;
+        text-align: center;
+        position: relative;
+    }
+    
+    .cta-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url("{{ url_for('static', filename='img/cyber-pattern.png') }}");
+        opacity: 0.1;
+        z-index: 0;
+    }
+    
+    .cta-content {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .cta-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+    }
+    
+    .cta-subtitle {
+        font-size: 1.25rem;
+        margin-bottom: 2rem;
+        opacity: 0.9;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .quick-scan-section {
+        padding: 3rem 0;
+        background-color: #f8f9fa;
+    }
+    
+    .quick-scan-card {
+        background-color: white;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        border: none;
+        padding: 2rem;
+    }
+    
+    .quick-scan-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .quick-scan-title {
+        font-size: 1.75rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: var(--dark);
+        text-align: center;
+    }
+    
+    .scan-input-group {
+        display: flex;
+        margin-bottom: 1rem;
+    }
+    
+    .scan-input {
+        flex: 1;
+        border-radius: var(--border-radius) 0 0 var(--border-radius);
+        border: 1px solid #e0e0e0;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .scan-input:focus {
+        outline: none;
+        box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+        border-color: var(--primary);
+    }
+    
+    .scan-button {
+        border-radius: 0 var(--border-radius) var(--border-radius) 0;
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        border: none;
+        padding: 0 1.5rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .scan-button:hover {
+        background: linear-gradient(135deg, #2980b9, #3498db);
+    }
+    
+    @media (max-width: 991.98px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+        
+        .hero-section {
+            padding: 3rem 0;
+        }
+        
+        .hero-image {
+            margin-top: 2rem;
+        }
+        
+        .section-title h2 {
+            font-size: 2rem;
+        }
+        
+        .cta-title {
+            font-size: 2rem;
+        }
+    }
+    
+    @media (max-width: 767.98px) {
+        .hero-title {
+            font-size: 2rem;
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+        }
+        
+        .scan-input-group {
+            flex-direction: column;
+        }
+        
+        .scan-input {
+            border-radius: var(--border-radius);
+            margin-bottom: 0.5rem;
+        }
+        
+        .scan-button {
+            border-radius: var(--border-radius);
+            width: 100%;
+            padding: 0.75rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 hero-content">
+                <h1 class="hero-title">Protect Yourself from Phishing Attacks</h1>
+                <p class="hero-subtitle">PhishGuard uses advanced machine learning algorithms to detect and protect you from phishing websites in real-time.</p>
+                <div class="hero-buttons">
+                    <a href="{{ url_for('scan') }}" class="btn btn-primary btn-lg me-3">
+                        <i class="fas fa-search me-2"></i> Scan URL
+                    </a>
+                    <a href="{{ url_for('register') }}" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-user-plus me-2"></i> Sign Up Free
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 mt-4 mt-lg-0">
+                <img src="{{ url_for('static', filename='img/hero-image.png') }}" alt="PhishGuard Protection" class="img-fluid hero-image">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Scan Section -->
+<section class="quick-scan-section">
+    <div class="container">
+        <div class="quick-scan-card">
+            <h2 class="quick-scan-title">Quick URL Check</h2>
+            <form action="{{ url_for('scan') }}" method="post" id="url-scan-form">
+                <div class="scan-input-group">
+                    <input type="url" class="scan-input" id="url-input" name="url" placeholder="Enter a URL to check (e.g., https://example.com)" required>
+                    <button type="submit" class="scan-button">
+                        <i class="fas fa-search me-2"></i> Scan Now
+                    </button>
+                </div>
+                <div class="invalid-feedback" id="url-feedback"></div>
+                <p class="text-muted text-center mt-2">
+                    <i class="fas fa-shield-alt me-1"></i> 
+                    We'll analyze this URL for phishing indicators and provide instant results.
+                </p>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="feature-section">
+    <div class="container">
+        <div class="section-title">
+            <h2>Why Choose PhishGuard?</h2>
+            <p>Our comprehensive phishing detection system offers multiple layers of protection to keep you safe online.</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3 class="feature-title">AI-Powered Detection</h3>
+                    <p>Our machine learning algorithms analyze multiple features to accurately identify phishing websites.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="feature-card animate-on-scroll delay-1">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3 class="feature-title">Real-Time Protection</h3>
+                    <p>Get instant results when you scan a URL, allowing you to make informed decisions before visiting websites.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="feature-card animate-on-scroll delay-2">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="feature-title">Detailed Analytics</h3>
+                    <p>View comprehensive reports and statistics about the URLs you've scanned and potential threats.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="feature-card animate-on-scroll delay-3">
+                    <div class="feature-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3 class="feature-title">Educational Resources</h3>
+                    <p>Learn about the latest phishing techniques and how to protect yourself with our educational content.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="feature-card animate-on-scroll delay-4">
+                    <div class="feature-icon">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <h3 class="feature-title">Scan History</h3>
+                    <p>Keep track of all your previous URL scans and results for future reference.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="feature-card animate-on-scroll delay-4">
+                    <div class="feature-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h3 class="feature-title">Alerts & Notifications</h3>
+                    <p>Receive alerts about new phishing threats and security updates to stay protected.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section">
+    <div class="container stats-content">
+        <div class="row">
+            <div class="col-md-3 mb-4">
+                <div class="stat-card animate-on-scroll">
+                    <div class="stat-value">98.7%</div>
+                    <div class="stat-label">Detection Accuracy</div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 mb-4">
+                <div class="stat-card animate-on-scroll delay-1">
+                    <div class="stat-value">1M+</div>
+                    <div class="stat-label">URLs Scanned</div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 mb-4">
+                <div class="stat-card animate-on-scroll delay-2">
+                    <div class="stat-value">50K+</div>
+                    <div class="stat-label">Users Protected</div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 mb-4">
+                <div class="stat-card animate-on-scroll delay-3">
+                    <div class="stat-value">24/7</div>
+                    <div class="stat-label">Protection</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="how-it-works-section">
+    <div class="container">
+        <div class="section-title">
+            <h2>How PhishGuard Works</h2>
+            <p>Our advanced phishing detection system works in four simple steps to keep you safe online.</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-3 mb-4">
+                <div class="step-card animate-on-scroll">
+                    <div class="step-number">1</div>
+                    <h3 class="step-title">Enter URL</h3>
+                    <p>Simply enter the suspicious URL you want to check into our scanner.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-3 mb-4">
+                <div class="step-card animate-on-scroll delay-1">
+                    <div class="step-number">2</div>
+                    <h3 class="step-title">AI Analysis</h3>
+                    <p>Our machine learning algorithms analyze multiple features of the URL and website.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-3 mb-4">
+                <div class="step-card animate-on-scroll delay-2">
+                    <div class="step-number">3</div>
+                    <h3 class="step-title">Get Results</h3>
+                    <p>Receive instant results showing whether the URL is safe, suspicious, or dangerous.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-3 mb-4">
+                <div class="step-card animate-on-scroll delay-3">
+                    <div class="step-number">4</div>
+                    <h3 class="step-title">Stay Protected</h3>
+                    <p>Make informed decisions based on our analysis to protect your sensitive information.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonial-section">
+    <div class="container">
+        <div class="section-title">
+            <h2>What Our Users Say</h2>
+            <p>Hear from people who have used PhishGuard to protect themselves from phishing attacks.</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="testimonial-card animate-on-scroll">
+                    <div class="testimonial-content">
+                        PhishGuard has saved me multiple times from clicking on malicious links. The detailed reports help me understand why a site is flagged as dangerous.
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="{{ url_for('static', filename='img/testimonial-1.jpg') }}" alt="Sarah Johnson" class="testimonial-avatar">
+                        <div>
+                            <div class="testimonial-name">Sarah Johnson</div>
+                            <div class="testimonial-position">Marketing Manager</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="testimonial-card animate-on-scroll delay-1">
+                    <div class="testimonial-content">
+                        As an IT professional, I recommend PhishGuard to all my clients. The accuracy of detection is impressive, and the educational resources are top-notch.
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="{{ url_for('static', filename='img/testimonial-2.jpg') }}" alt="Michael Chen" class="testimonial-avatar">
+                        <div>
+                            <div class="testimonial-name">Michael Chen</div>
+                            <div class="testimonial-position">IT Consultant</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="testimonial-card animate-on-scroll delay-2">
+                    <div class="testimonial-content">
+                        I use PhishGuard daily in my role as a cybersecurity analyst. The dashboard provides valuable insights, and the API integration is seamless.
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="{{ url_for('static', filename='img/testimonial-3.jpg') }}" alt="Emily Rodriguez" class="testimonial-avatar">
+                        <div>
+                            <div class="testimonial-name">Emily Rodriguez</div>
+                            <div class="testimonial-position">Cybersecurity Analyst</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container cta-content">
+        <h2 class="cta-title">Ready to Protect Yourself?</h2>
+        <p class="cta-subtitle">Join thousands of users who trust PhishGuard to keep them safe from phishing attacks. Create your free account today.</p>
+        <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg pulse">
+            <i class="fas fa-user-plus me-2"></i> Sign Up Now - It's Free
+        </a>
+        <p class="mt-3 opacity-75">No credit card required. Start scanning URLs instantly.</p>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize animations for elements with animate-on-scroll class
+        const animateElements = document.querySelectorAll('.animate-on-scroll');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        animateElements.forEach(element => {
+            observer.observe(element);
+        });
+        
+        // URL validation for the quick scan form
+        const urlForm = document.getElementById('url-scan-form');
+        const urlInput = document.getElementById('url-input');
+        const urlFeedback = document.getElementById('url-feedback');
+        
+        if (urlForm && urlInput) {
+            urlForm.addEventListener('submit', function(e) {
+                if (!isValidUrl(urlInput.value)) {
+                    e.preventDefault();
+                    urlInput.classList.add('is-invalid');
+                    if (urlFeedback) {
+                        urlFeedback.textContent = 'Please enter a valid URL (e.g., https://example.com)';
+                    }
+                } else {
+                    urlInput.classList.remove('is-invalid');
+                    urlInput.classList.add('is-valid');
+                }
+            });
+            
+            urlInput.addEventListener('input', function() {
+                if (urlInput.classList.contains('is-invalid')) {
+                    if (isValidUrl(urlInput.value)) {
+                        urlInput.classList.remove('is-invalid');
+                        urlInput.classList.add('is-valid');
+                        if (urlFeedback) {
+                            urlFeedback.textContent = '';
+                        }
+                    }
+                }
+            });
+        }
+        
+        function isValidUrl(url) {
+            try {
+                new URL(url);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+    });
+</script>
+{% endblock %}
