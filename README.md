@@ -156,3 +156,7 @@ XGBoost gave the highest test accuracy of the four models in this notebook. Thes
 
 **Charujith J S**
 [LinkedIn](https://linkedin.com/in/charujith-js) · [Email](mailto:jscharujith@gmail.com)
+
+## License
+
+This project is licensed under the MIT License — see [LICENSE](LICENSE).
